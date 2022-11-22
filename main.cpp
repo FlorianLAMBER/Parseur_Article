@@ -128,13 +128,15 @@ int main(int argc,char** argv)
 			/*Récupération nom du fichier et du dossier .
 			Creation du workspaceInfo de sortie . 
 			Création application.txt et cration du fichier txt liéer au pdf*/
-			fichierpdf=workspaceInfo->get_outputFolder()+*it;
 			if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
 				mkdir(workspaceInfo->get_outputFolder().data(),S_IRWXU |S_IRGRP | S_IXGRP |S_IROTH | S_IXOTH );//Création du workspaceInfo
 			}
+			fichierpdf=*it;
+			//Permet de remplacer les espaces par des "_" pour le titre
 			while(fichierpdf.find(" ") != std::string::npos){
 				fichierpdf=fichierpdf.replace(fichierpdf.find(" "),1,"_");
 			}
+			fichierpdf=workspaceInfo->get_outputFolder()+fichierpdf;
 			fichierTxt=strdup(fichierpdf.data());
 			fichierTxt[fichierpdf.size()-3]='t';
 			fichierTxt[fichierpdf.size()-2]='x';
@@ -150,6 +152,7 @@ int main(int argc,char** argv)
 			RecupereDonnerLigne=strtok(Ligne," \n\t");
 			fputs("Titre du fichier : ",pFile2);
 			fichierpdf=*it;
+			//Permet de remplacer les espaces par des "_" pour le titre
 			while(fichierpdf.find(" ") != std::string::npos){
 				fichierpdf=fichierpdf.replace(fichierpdf.find(" "),1,"_");
 			}
