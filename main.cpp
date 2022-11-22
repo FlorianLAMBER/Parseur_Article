@@ -56,12 +56,12 @@ int main(int argc,char** argv)
 			if(currentArg == "-v" || currentArg == "--version")
 			{
 				appInfo::print_release();
-				return 0;
+				continue;
 			}
 			if(currentArg == "-h" || currentArg == "--help")
 			{
 				appInfo::print_help();
-				return 0;
+				continue;
 			}
 			if(currentArg == "-o" || currentArg == "--output")
 			{
@@ -104,14 +104,14 @@ int main(int argc,char** argv)
 	if (argc > 1 ){
 		int boolean;									//Servira a rentrer dans les whiles
 		char Ligne[255]; 								//Permettra de récupérer la ligne du fichier txt ou on travaille
-		char* RecupereDonnerLigne;							//Permettera de récupérer une partie de la ligne séparé par des espace , \n et \t
-		char* RecuperationPartieDonnerLigne;						//Permettera de récupérer la partie séparé et de le séparé encore par des =,<,>
-		char CopieLigneQuOnEtudie[255];							//Permettera de faire la copie de la variable Ligne
+		char* RecupereDonnerLigne;						//Permettera de récupérer une partie de la ligne séparé par des espace , \n et \t
+		char* RecuperationPartieDonnerLigne;			//Permettera de récupérer la partie séparé et de le séparé encore par des =,<,>
+		char CopieLigneQuOnEtudie[255];					//Permettera de faire la copie de la variable Ligne
 		double xMin;									//Permettera de récupérer la position d'un éléments
 		double xMin2;									//Permettera de récupérer la position d'un éléments
-		std::string fichierpdf;								//Permettera de savoir le nom du fichier pdf mais aussi ou il se situe
+		std::string fichierpdf;							//Permettera de savoir le nom du fichier pdf mais aussi ou il se situe
 		char* fichierTxt;								//Permettera de pointer ou le fichier créer va se trouver et sur quel format
-		char* appTxt = "./application.txt";						//Sa sera le fichier txt qui recevra tous les resultats de la commande pdftotext
+		char* appTxt = "./application.txt";				//Sa sera le fichier txt qui recevra tous les resultats de la commande pdftotext
 		FILE * pFile;									//Pour lire le fichier ./application.txt
 		FILE * pFile2;									//Pour écrire dans le fichier txt
 		folder_info* workspaceInfo;							//Permet d'avoir tous les fichier pdf dans une classe .
@@ -152,6 +152,7 @@ int main(int argc,char** argv)
 			/*Recupération du block ou se trouve le titre du document .*/
 			fputs("Titre :",pFile2);
 			while (boolean == 1){
+
 				/*Si dans RecupereDonnerLigne il ressemble à <block 
 				alors on rentre*/
 				if (strcmp(RecupereDonnerLigne,"<block")==0){
@@ -161,6 +162,7 @@ int main(int argc,char** argv)
 					/*Récupération de la position du block . 
 					S'y il est trop haut (je vais regarder sa position yMin) 
 					je vais dans un autre block*/
+
 					RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne,"=\"");
 					RecuperationPartieDonnerLigne=strtok(NULL,"=\"");
 					if (atol(RecuperationPartieDonnerLigne)< 60.0){
@@ -206,6 +208,7 @@ int main(int argc,char** argv)
 				}
 				/*Sinon si c'est </line> ou <line 
 				je vais directment passer à la prochaine ligne*/
+
 				else if (strcmp(RecupereDonnerLigne,"</line>")==0 || strcmp(RecupereDonnerLigne,"<line")==0 ){
 					/*On va vers la prochaine ligne du fichier application.txt*/
 					fgets(Ligne,255,pFile);
@@ -220,7 +223,6 @@ int main(int argc,char** argv)
 
 			/*Recupération du block ou se trouve Abstract ou 
 			We,This,As,In si Abstract n'est pas présent dans le fichier*/
-
 			fputs("Abstract :",pFile2);
 			while (boolean == 1){
 
@@ -236,7 +238,6 @@ int main(int argc,char** argv)
 
 					fgets(Ligne,255,pFile);
 					fgets(Ligne,255,pFile);
-
 					/*Je fais copie de la ligne au cas si la position 
 					est inférieur à 300*/
 
@@ -266,6 +267,7 @@ int main(int argc,char** argv)
 						/*Si le mot c'est Abstract ou We,This,As,In 
 						si Abstract n'est pas présent*/
 
+
 						if (strcmp(RecuperationPartieDonnerLigne,"Abstract") == 0 || 
 						strcmp(RecuperationPartieDonnerLigne,"Abstract—We") == 0 || 
 						strcmp(RecuperationPartieDonnerLigne,"This") == 0 || 
@@ -292,7 +294,6 @@ int main(int argc,char** argv)
 			boolean=1;
 			
 			fgets(Ligne,255,pFile);
-
 			/*Dans le cas ou le mot suivant Abstarct,We,In,This,As 
 			n'est pas à la suite on va vers le prochain <word*/
 
@@ -362,4 +363,6 @@ int main(int argc,char** argv)
 	}
 	return 0;
 }
+
+
 
