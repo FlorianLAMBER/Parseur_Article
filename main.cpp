@@ -115,7 +115,7 @@ int main(int argc,char** argv)
 		FILE * pFile;									//Pour lire le fichier ./application.txt
 		FILE * pFile2;									//Pour écrire dans le fichier txt
 		folder_info* workspaceInfo;							//Permet d'avoir tous les fichier pdf dans une classe .
-		if (hasInput){
+		if (hasInput && !hasOutput){
 			workspaceInfo = new folder_info(inputFolder);
 		}
 		else if (hasInput && hasOutput){
@@ -129,9 +129,9 @@ int main(int argc,char** argv)
 			Creation du workspaceInfo de sortie . 
 			Création application.txt et cration du fichier txt liéer au pdf*/
 			fichierpdf=workspaceInfo->get_outputFolder()+*it;
-			if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
+			//if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
 				mkdir(workspaceInfo->get_outputFolder().data(),S_IRWXU |S_IRGRP | S_IXGRP |S_IROTH | S_IXOTH );//Création du workspaceInfo
-			}
+			//}
 			fichierTxt=strdup(fichierpdf.data());
 			fichierTxt[fichierpdf.size()-3]='t';
 			fichierTxt[fichierpdf.size()-2]='x';
