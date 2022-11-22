@@ -1,0 +1,7 @@
+*.json
+*.out
+*.swp
+*.gch
+.vscode
+Article_handler
+.DS_Store
