@@ -1,7 +1,7 @@
 all:	build
 clean:
 	@echo "\n\x1b[32m--------| \x1b[1;32mCLEANING\x1b[0m\x1b[32m |--------\x1b[0m"
-	rm -f *.o *.s *.out *.gch Article_handler
+	rm -f *.o *.s *.out *.gch Article_handler utils/*.gch
 	@echo "\x1b[32m\tDONE\x1b[0m"
 build: 
 	@echo "\x1b[32m--------| \x1b[1mTest of compilateur\x1b[0m\x1b[32m |--------\x1b[0m"

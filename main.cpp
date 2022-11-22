@@ -11,6 +11,8 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
+//#define DEBUG
+
 int ExecuterPDF(const char* pdf, char* txt){
     int pid;
     int res;
@@ -52,12 +54,12 @@ int main(int argc,char** argv)
 			if(currentArg == "-v" || currentArg == "--version")
 			{
 				appInfo::print_release();
-				continue;
+				return 0;
 			}
 			if(currentArg == "-h" || currentArg == "--help")
 			{
 				appInfo::print_help();
-				continue;
+				return 0;
 			}
 			if(currentArg == "-o" || currentArg == "--output")
 			{
@@ -111,26 +113,27 @@ int main(int argc,char** argv)
 		int savin;
 		FILE * pFile;
 		FILE * pFile2;
-		folder_info* test ;
-		if (hasInput){
-			test = new folder_info(inputFolder);
+		folder_info* workspaceInfo ;
+		if (hasInput && !hasOutput){
+			workspaceInfo = new folder_info(inputFolder);
 		}
 		else if (hasInput && hasOutput){
-			test = new folder_info(inputFolder, outputFolder);
+			workspaceInfo = new folder_info(inputFolder, outputFolder);
 		}
-		test->update_pdfList();
-		std::vector<std::string> pdf_vect = test->get_pdfList();
+
+		workspaceInfo->update_pdfList();
+		std::vector<std::string> pdf_vect = workspaceInfo->get_pdfList();
 		for (auto it = pdf_vect.begin(); it != pdf_vect.end(); it++)    
 		{
-			essai=test->get_outputFolder()+*it;
-			mkdir(test->get_outputFolder().data(),S_IRWXU |S_IRGRP | S_IXGRP |S_IROTH | S_IXOTH );
+			essai=workspaceInfo->get_outputFolder()+*it;
+			mkdir(workspaceInfo->get_outputFolder().data(),S_IRWXU |S_IRGRP | S_IXGRP |S_IROTH | S_IXOTH );
 			essai2=strdup(essai.data());
 			essai2[essai.size()-3]='t';
 			essai2[essai.size()-2]='x';
 			essai2[essai.size()-1]='t';
-			essai=test->get_pdfFolder()+*it;
-			char* appTxt = "./application.txt";
-			ExecuterPDF(essai.data(), appTxt);
+			essai=workspaceInfo->get_pdfFolder()+*it;
+			std::cout << "essai2 = " << essai2 << std::endl;
+			ExecuterPDF(essai.data(), "./application.txt");
 			pFile=fopen("./application.txt","r");
 			pFile2=fopen(essai2,"w+a");
 			cpt = 1;
