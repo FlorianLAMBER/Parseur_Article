@@ -129,9 +129,12 @@ int main(int argc,char** argv)
 			Creation du workspaceInfo de sortie . 
 			Création application.txt et cration du fichier txt liéer au pdf*/
 			fichierpdf=workspaceInfo->get_outputFolder()+*it;
-			//if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
+			if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
 				mkdir(workspaceInfo->get_outputFolder().data(),S_IRWXU |S_IRGRP | S_IXGRP |S_IROTH | S_IXOTH );//Création du workspaceInfo
-			//}
+			}
+			while(fichierpdf.find(" ") != std::string::npos){
+				fichierpdf=fichierpdf.replace(fichierpdf.find(" "),1,"_");
+			}
 			fichierTxt=strdup(fichierpdf.data());
 			fichierTxt[fichierpdf.size()-3]='t';
 			fichierTxt[fichierpdf.size()-2]='x';
@@ -147,6 +150,9 @@ int main(int argc,char** argv)
 			RecupereDonnerLigne=strtok(Ligne," \n\t");
 			fputs("Titre du fichier : ",pFile2);
 			fichierpdf=*it;
+			while(fichierpdf.find(" ") != std::string::npos){
+				fichierpdf=fichierpdf.replace(fichierpdf.find(" "),1,"_");
+			}
 			fputs(fichierpdf.data(),pFile2);
 			fputs("\n",pFile2);
 			/*Recupération du block ou se trouve le titre du document .*/
@@ -268,8 +274,8 @@ int main(int argc,char** argv)
 						si Abstract n'est pas présent*/
 
 
-						if (strcmp(RecuperationPartieDonnerLigne,"Abstract") == 0 || 
-						strcmp(RecuperationPartieDonnerLigne,"Abstract—We") == 0 || 
+						std::string trouverAbstract = RecuperationPartieDonnerLigne;
+						if (trouverAbstract.find("Abstract") != std::string::npos || 
 						strcmp(RecuperationPartieDonnerLigne,"This") == 0 || 
 						strcmp(RecuperationPartieDonnerLigne,"As") == 0|| 
 						strcmp(RecuperationPartieDonnerLigne,"In") == 0|| 
