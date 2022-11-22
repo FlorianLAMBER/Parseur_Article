@@ -125,7 +125,9 @@ int main(int argc,char** argv)
 		std::vector<std::string> pdf_vect = workspaceInfo->get_pdfList();
 		for (auto it = pdf_vect.begin(); it != pdf_vect.end(); it++)    
 		{
-			/*Récupération nom du fichier et du dossier .Cration du workspaceInfo de sortie . Création application.txt et cration du fichier txt liéer au pdf*/
+			/*Récupération nom du fichier et du dossier .
+			Creation du workspaceInfo de sortie . 
+			Création application.txt et cration du fichier txt liéer au pdf*/
 			fichierpdf=workspaceInfo->get_outputFolder()+*it;
 			if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
 				mkdir(workspaceInfo->get_outputFolder().data(),S_IRWXU |S_IRGRP | S_IXGRP |S_IROTH | S_IXOTH );//Création du workspaceInfo
@@ -150,19 +152,25 @@ int main(int argc,char** argv)
 			/*Recupération du block ou se trouve le titre du document .*/
 			fputs("Titre :",pFile2);
 			while (boolean == 1){
-				/*Si dans RecupereDonnerLigne il ressemble à <block alors on rentre*/
+
+				/*Si dans RecupereDonnerLigne il ressemble à <block 
+				alors on rentre*/
 				if (strcmp(RecupereDonnerLigne,"<block")==0){
 					for (int i=0 ; i<2 ; i++){
 						RecupereDonnerLigne=strtok(NULL," \t\n");
 					}
-					/*Récupération de la position du block . S'y il est trop haut (je vais regarder sa position yMin) je vais dans un autre block*/
+					/*Récupération de la position du block . 
+					S'y il est trop haut (je vais regarder sa position yMin) 
+					je vais dans un autre block*/
+
 					RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne,"=\"");
 					RecuperationPartieDonnerLigne=strtok(NULL,"=\"");
 					if (atol(RecuperationPartieDonnerLigne)< 60.0){
 						fgets(Ligne,255,pFile);
 						RecupereDonnerLigne=strtok(Ligne," \n\t");
 					}
-					/*Si la position est bonne , je fais 2 fgets(permet d'aller vers la prochaine ligne fichier application.txt)
+					/*Si la position est bonne , 
+					je fais 2 fgets 
 					 pour accéder directement sur le mot*/
 					else{
 						fgets(Ligne,255,pFile);
@@ -180,7 +188,8 @@ int main(int argc,char** argv)
 			}
 			/*Ecriture du Titre dans le fichier txt*/
 			while (boolean==0){
-				/*Si RecupereDonnerLigne est <word alors je vais ecrire le mot dans le fichier txt*/
+				/*Si RecupereDonnerLigne est <word alors 
+				je vais ecrire le mot dans le fichier txt*/
 				if (strcmp(RecupereDonnerLigne,"<word")==0){
 					/*Pour accéder à la partie ou se trouve le mot*/
 					for (int i=0 ; i<4 ; i++){
@@ -197,7 +206,9 @@ int main(int argc,char** argv)
 					RecupereDonnerLigne=strtok(Ligne," \t\n");
 
 				}
-				/*Sinon si c'est </line> ou <line je vais directment passer à la prochaine ligne*/
+				/*Sinon si c'est </line> ou <line 
+				je vais directment passer à la prochaine ligne*/
+
 				else if (strcmp(RecupereDonnerLigne,"</line>")==0 || strcmp(RecupereDonnerLigne,"<line")==0 ){
 					/*On va vers la prochaine ligne du fichier application.txt*/
 					fgets(Ligne,255,pFile);
@@ -210,13 +221,15 @@ int main(int argc,char** argv)
 			}
 			fputs("\n",pFile2);
 
-			/*Recupération du block ou se trouve Abstract ou We,This,As,In si Abstract n'est pas présent dans le fichier*/
-
+			/*Recupération du block ou se trouve Abstract ou 
+			We,This,As,In si Abstract n'est pas présent dans le fichier*/
 			fputs("Abstract :",pFile2);
 			while (boolean == 1){
 
-				/*Si RecupereDonnerLigne est <block alors je vais vers le premier mot pour voir sa position.
-				S'y il est à plus de 300 cela veut dire que se mot provient de la colonne qui est à droit du document
+				/*Si RecupereDonnerLigne est <block alors 
+				je vais vers le premier mot pour voir sa position.
+				S'y il est à plus de 300 cela veut dire que se mot provient 
+				de la colonne qui est à droit du document
 				(S'y il y en a une ) */
 
 				if (strcmp(RecupereDonnerLigne,"<block")==0){
@@ -225,8 +238,8 @@ int main(int argc,char** argv)
 
 					fgets(Ligne,255,pFile);
 					fgets(Ligne,255,pFile);
-
-					/*Je fais copie de la ligne au cas si la position est inférieur à 300*/
+					/*Je fais copie de la ligne au cas si la position 
+					est inférieur à 300*/
 
 					strcpy(CopieLigneQuOnEtudie,Ligne);
 					RecupereDonnerLigne=strtok(CopieLigneQuOnEtudie," \t\n");
@@ -251,7 +264,9 @@ int main(int argc,char** argv)
 						RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
 						RecuperationPartieDonnerLigne=strtok(NULL," <>");
 
-						/*Si le mot c'est Abstract ou We,This,As,In si Abstract n'est pas présent*/
+						/*Si le mot c'est Abstract ou We,This,As,In 
+						si Abstract n'est pas présent*/
+
 
 						if (strcmp(RecuperationPartieDonnerLigne,"Abstract") == 0 || 
 						strcmp(RecuperationPartieDonnerLigne,"Abstract—We") == 0 || 
@@ -279,8 +294,8 @@ int main(int argc,char** argv)
 			boolean=1;
 			
 			fgets(Ligne,255,pFile);
-
-			/*Dans le cas ou le mot suivant Abstarct,We,In,This,As n'est pas à la suite on va vers le prochain <word*/
+			/*Dans le cas ou le mot suivant Abstarct,We,In,This,As 
+			n'est pas à la suite on va vers le prochain <word*/
 
 			strcpy(CopieLigneQuOnEtudie,Ligne);
 			RecupereDonnerLigne=strtok(CopieLigneQuOnEtudie," \t\n");
@@ -290,15 +305,16 @@ int main(int argc,char** argv)
 				RecupereDonnerLigne=strtok(CopieLigneQuOnEtudie," \t\n");
 			}
 
-			/*La on verifie ensuite le cas ou le block se trouvant dans une autre colonne 
-			se trouve avant le contenu de l'abstract*/
+			/*La on verifie ensuite le cas ou le block se trouvant 
+			dans une autre colonne */
 
 			RecupereDonnerLigne=strtok(NULL," \t\n");
 			RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne,"=\"");
 			RecuperationPartieDonnerLigne=strtok(NULL,"=\"");
 			xMin2=atof(RecuperationPartieDonnerLigne);
 
-			/*Je  regarde la position du mot Abstract,In,This,As,We et le mot ou on se trouve s'il y a une trop grosse différence
+			/*Je  regarde la position du mot Abstract,In,This,As,We 
+			et le mot ou on se trouve .S'il y a une trop grosse différence
 			alors on chercher la ligne ou le mot ou la différence est négatif */
 
 			while (xMin2 > (xMin+70)){
