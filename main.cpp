@@ -114,7 +114,7 @@ int main(int argc,char** argv)
 		char* appTxt = "./application.txt";				//Sa sera le fichier txt qui recevra tous les resultats de la commande pdftotext
 		FILE * pFile;									//Pour lire le fichier ./application.txt
 		FILE * pFile2;									//Pour écrire dans le fichier txt
-		folder_info* workspaceInfo;							//Permet d'avoir tous les fichier pdf dans une classe .
+		folder_info* workspaceInfo;						//Permet d'avoir tous les fichier pdf dans une classe .
 		if (hasInput && !hasOutput){
 			workspaceInfo = new folder_info(inputFolder);
 		}

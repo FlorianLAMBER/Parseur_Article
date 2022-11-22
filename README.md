@@ -1,31 +1,26 @@
-# Parseur_Article
+# Article_handler
 
-Explication du système :
-Fonctionnement avec argument :
+Article_handler est un analyseur d'articles scientifiques. Son but est de vous permettre de trouver plus facilement les informations contenues dans un article scientifique.
+Actuellement, il est possible de trouver le titre et le résumé de vos articles scientifiques. Tout cela en un temps très court.a
+## Prise en main:
 
+### Compilation et dependance :
 
-Fonctionnement normal :
-Notre programme marche que sur des fichiers pdf qui sont écrits en Anglais .
-Avec le dossier donné en argument , on va créer une classe folder_info ( classe créeer par Emmanuel AUBERTIN) qui nous donnera tous les documents pdf se trouvant dedans .Mais aussi le nom du dossier de sortie qui peut etre donner en argument ou créer automatiquement ( on prend le dossier d'entré et on rajoute out) et celui d'entré .
-Avec Cela pour chaque fichier pdf :
-  Je vais d'abord faire une copie du nom du fichier pdf ( en comptant le .pdf ) et modifier le .pdf en .txt .
-  Après je vais executer la commande pdftotext -bbox-layout dossier/nomfichierpdf ./application.txt ( application.txt sera le fichier on en aura la conversion par le  pdftotext de tous les pdf)
-  J'ouvre maintenant en lecture ./application.txt et j'ouvre en écriture + append dossiersortie/nomfichiertxt .
-  j'écrit "Titre fichier pdf " ensuite le titre du fichier pdf dans le fichiertxt.
-  J'écrit un saut à la ligne .
-  J'écrit "Titre" dans le fichier txt.
-  La après je vais aller dans le fichier ./application.txt et je vais accéder au premier bloc , si la position du bloc dans une page est inférieur à 60 en position y alors je vais aux bloc suivant (la page fait max ... en position y et max ... en position x ).Cela permet d'enlever les cas ou on a du textes sur les bordures haut du documents .
-  Après avoir touvé le bloc se trouvant le titre , je vais pour chaque mot jusqu'a la fin du block , ecrire ces mot dans le fichier txt .
-    J'écrit un saut à la ligne puis "Abstrat :" dans le fichier txt.
-    Après je vais voir pour chaque block qui suit si ce qui se trouve dans le premier mot (premier ligne <word dans le bloc ),s'y il trouve Abstract ou This , In , We , As . Et j'écrit dans le document si il trouve This,In,We,As.
-  Dans le cas ou on  le mot Abstract tous seul dans un block ( qu'il y a un seul <word dans le <block ) alors je vais au block suivant et je regarde si le block suivant si sa position x est bien inférieur à +60 de celle ou se trouve le mot Abstract sinon je vais dans un autre block.
-  Après etre dans le bon block je vais etre tous les mots jusqu'a la fin du block dans le fichier txt .
-  Je ferme le fichier txt et application.txt et on recommence pour les autres fichiers pdf.
-  A la fin du programme on supprime application.txt .
-  
-  Procédure nécessaire pour avoir Application :
-  g++ -o ..... main.cpp pour compiler le programmme
-  
-  Pour éxécuter que sur Linux :
- ./...... -i dossier_entré -o dossier_sortie
-  
+Pour compiler et installer les dépendances sur Debian/Ubuntu et MacOS, vous pouvez utiliser le makefile qui fera tout. Pour ce faire, utilisez la commande suivante :
+```bash
+curl https://raw.githubusercontent.com/Fliche/Parseur_Article/main/makefile && make clone && cd Parseur_Article && make
+```
+
+## Utiliser Article_handler :
+
+Une fois compilé et installé, l'utilisation du scanner est assez simple.
+Il a un argument obligatoire, qui est `-i` ; il spécifie le chemin vers le dossier contenant votre pdf.
+
+Si vous ne spécifiez pas de dossier de sortie avec l'option `-o`, un dossier de `output/` sera créé.
+
+Exemple d'utilisation :
+```bash
+./Article_handler -i /PATH/TO/PDF # La sortie sera dans output
+
+./Article_handler -i /PATH/TO/PDF -o /PATH/TO/RESULT # La sortie sera dans /PATH/TO/RESULT
+```
