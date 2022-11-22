@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
-#include "folder_info.hpp"
-#include "folder_info.cpp"
+#include "utils/folder_info.hpp"
+#include "utils/appInfo.hpp"
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -11,7 +11,7 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-int ExecuterPDF(char* pdf,char* txt){
+int ExecuterPDF(const char* pdf, char* txt){
     int pid;
     int res;
     int ret;
@@ -35,6 +35,68 @@ int ExecuterPDF(char* pdf,char* txt){
 
 int main(int argc,char** argv)
 {
+	int hasOutput = 0;
+	int hasInput = 0;
+	std::string inputFolder, outputFolder;
+	#ifdef DEBUG
+		std::cout << "argc = " << argc << std::endl;
+	#endif 
+	if (argc >= 1 )
+	{
+		for(int i=1; i < argc; i++)
+		{
+			std::string currentArg = std::string(argv[i]);
+			#ifdef DEBUG
+				std::cout << "\targv[" << i <<"] = " << argv[i] << std::endl;
+			#endif
+			if(currentArg == "-v" || currentArg == "--version")
+			{
+				appInfo::print_release();
+				continue;
+			}
+			if(currentArg == "-h" || currentArg == "--help")
+			{
+				appInfo::print_help();
+				continue;
+			}
+			if(currentArg == "-o" || currentArg == "--output")
+			{
+				outputFolder = argv[i+1];
+				hasOutput = 1;
+				#ifdef DEBUG
+					std::cout << "Your output folder is " << outputFolder << std::endl;
+				#endif
+				i++;
+				continue;
+			}
+
+			if(currentArg == "-i" || currentArg == "--input")
+			{
+				inputFolder = argv[i+1];
+				hasInput = 1;
+				#ifdef DEBUG
+					std::cout << "Your input folder is " << inputFolder << std::endl;
+				#endif
+				i++;
+				continue;
+			}
+
+			std::cout << "Unknow argument " << argv[i] << ", see usage below for more detail." << std::endl;
+			appInfo::print_usage();
+			return 0;
+		}
+		if(!hasInput)
+		{
+			std::cout << "\033[1;31mArgument -i is missing !\033[0m" << std::endl << "See usage below for more detail." << std::endl;
+			appInfo::print_usage();
+			return 0;
+		}
+	} else {
+		appInfo::print_usage();
+		return 0;
+	}
+
+
 	if (argc > 1 ){
 		int t,s,cpt;
 		char ligne[255];
@@ -50,11 +112,11 @@ int main(int argc,char** argv)
 		FILE * pFile;
 		FILE * pFile2;
 		folder_info* test ;
-		if (argc == 2 ){
-			test = new folder_info(argv[1]);
+		if (hasInput){
+			test = new folder_info(inputFolder);
 		}
-		else if (argc == 3){
-			test = new folder_info(argv[1],argv[2]);
+		else if (hasInput && hasOutput){
+			test = new folder_info(inputFolder, outputFolder);
 		}
 		test->update_pdfList();
 		std::vector<std::string> pdf_vect = test->get_pdfList();
@@ -67,7 +129,8 @@ int main(int argc,char** argv)
 			essai2[essai.size()-2]='x';
 			essai2[essai.size()-1]='t';
 			essai=test->get_pdfFolder()+*it;
-			ExecuterPDF(essai.data(),"./application.txt");
+			char* appTxt = "./application.txt";
+			ExecuterPDF(essai.data(), appTxt);
 			pFile=fopen("./application.txt","r");
 			pFile2=fopen(essai2,"w+a");
 			cpt = 1;

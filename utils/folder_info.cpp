@@ -7,21 +7,16 @@
 
 //#define DEBUG
 
-std::string PROGNAME="AppName";
-std::string FILE_NAME= __FILE__;
-std::string RELEASE="Revision 0.1a | Last update 09 nov 2022";
-std::string AUTHOR="Aubertin Emmanuel";
-std::string COPYRIGHT="(c) 2022 "+ AUTHOR + " from https://athomisos.fr";
-
-void print_release() {
-    std::cout << RELEASE << COPYRIGHT << std::endl;
-}
 
 //using namespace std;
 
 const std::string folder_info::DEFAULT_OUTPUT = "output/";
 
-
+/**
+ * @brief Construct a new folder info::folder info object
+ * 
+ * @param inPdfFolder String who is the path to the pdf's folder.
+ */
 folder_info::folder_info(std::string inPdfFolder)
 {
 	if(inPdfFolder.back() != '/')
@@ -35,6 +30,12 @@ folder_info::folder_info(std::string inPdfFolder)
 	//this->pdfList = new std::vector<std::string>;
 }
 
+/**
+ * @brief Construct a new folder info::folder info object
+ * 
+ * @param inPdfFolder String who is the path to the pdf's folder.
+ * @param inOutputFolder Name/path of the ouput folder
+ */
 folder_info::folder_info(std::string inPdfFolder,std::string inOutputFolder)
 {
 	if(inPdfFolder.back() != '/')
@@ -52,16 +53,29 @@ folder_info::folder_info(std::string inPdfFolder,std::string inOutputFolder)
         }
 }
 
+/**
+ * @brief Getter of the pdfFolder
+ * 
+ * @return std::string path to pdfFolder
+ */
 std::string folder_info::get_pdfFolder()
 {
 	return this->pdfFolder;
 }
 
+/**
+ * @brief Getter of the output folder
+ * 
+ * @return std::string path to the output
+ */
 std::string folder_info::get_outputFolder()
 {
 	return this->outputFolder;
 }
  
+/**
+ * @brief Update the list pdf list
+ */
 void folder_info::update_pdfList()
 {
 	std::string cmd = "ls " + this->get_pdfFolder() + " | grep .pdf";
@@ -84,13 +98,24 @@ void folder_info::update_pdfList()
 	}
 }
 
+/**
+ * @brief Getter of the pdfList
+ * 
+ * @return std::vector<std::string> with all pdf avaible in the folder
+ */ 
 std::vector<std::string> folder_info::get_pdfList()
 {
 	return this->pdfList;
 }
 
-
-std::string folder_info::exec(const char* cmd) {
+/**
+ * @brief Execute a commande
+ * 
+ * @param const char* Commande to execute 
+ * @return std::string Output of the commande
+ */
+std::string folder_info::exec(const char* cmd)
+{
     char buffer[128];
     std::string result = "";
     FILE* pipe = popen(cmd, "r");
