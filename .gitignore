@@ -4,3 +4,4 @@
 *.gch
 .vscode
 Article_handler
+.DS_Store
