@@ -1,4 +1,4 @@
-all:	test
+all:	build
 clean:
 	@echo "\n\x1b[32m--------| \x1b[1;32mCLEANING\x1b[0m\x1b[32m |--------\x1b[0m"
 	rm -f *.o *.s *.out *.gch Article_handler
