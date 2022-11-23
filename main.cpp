@@ -13,14 +13,14 @@
 #include <filesystem>
 
 /*Fonction permettant d'exécuter la fonction pdftotext en c++*/
-int ExecuterPDF(const char* pdf, char* txt){
+int ExecuterPDF(const char* pdf, std::string txt){
     int pid;
     int res;
     int ret;
     int verification_commande;
     pid=fork();
     if (pid==0){
-        verification_commande=execlp("pdftotext","pdftotext","-bbox-layout",pdf,txt,NULL);
+        verification_commande=execlp("pdftotext","pdftotext","-bbox-layout",pdf,txt.data(),NULL);
         if (verification_commande == -1) {
             exit(254);
         }
@@ -135,7 +135,7 @@ int main(int argc,char** argv)
 		double xMin2;									//Permettera de récupérer la position d'un éléments
 		std::string fichierpdf;							//Permettera de savoir le nom du fichier pdf mais aussi ou il se situe
 		char* fichierTxt;								//Permettera de pointer ou le fichier créer va se trouver et sur quel format
-		char* appTxt = "./application.txt";				//Sa sera le fichier txt qui recevra tous les resultats de la commande pdftotext
+		std::string appTxt = "./application.txt";				//Sa sera le fichier txt qui recevra tous les resultats de la commande pdftotext
 		FILE * pFile;									//Pour lire le fichier ./application.txt
 		FILE * pFile2;									//Pour écrire dans le fichier txt
 		folder_info* workspaceInfo;						//Permet d'avoir tous les fichier pdf dans une classe .
@@ -156,9 +156,9 @@ int main(int argc,char** argv)
 			Creation du workspaceInfo de sortie . 
 			Création application.txt et cration du fichier txt liéer au pdf*/
 			fichierpdf=workspaceInfo->get_outputFolder()+*it;
-//			if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
+			if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
 				mkdir(workspaceInfo->get_outputFolder().data(),S_IRWXU |S_IRGRP | S_IXGRP |S_IROTH | S_IXOTH );//Création du workspaceInfo
-//			}
+			}
 			while(fichierpdf.find(" ") != std::string::npos){
 				fichierpdf=fichierpdf.replace(fichierpdf.find(" "),1,"_");
 			}

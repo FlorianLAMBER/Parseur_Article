@@ -20,7 +20,7 @@ void appInfo::print_usage()
 {
         std::cout << std::endl << appInfo::PROGNAME << std::endl;
         std::cout << "Usage:" << appInfo::PROGNAME << "& [-i | --input] & [-x | --xml] & [-t | --txt] | [-h | --help] | [-v | --version] | [-o | --output]  "<< std::endl;
-        std::cout << "\t\t-h  Hepl" << std::endl;
+        std::cout << "\t\t-h  Help" << std::endl;
         std::cout << "\t\t-v  Version" << std::endl;
         std::cout << "\t\t-i  Input folder, in this folder you may have all your pdf" << std::endl;
         std::cout << "\t\t-o  Output folder (./output/ by default)" << std::endl;
