@@ -119,6 +119,12 @@ int main(int argc,char** argv)
 			appInfo::print_usage();
 			return 0;
 		}
+		if(!isTxt && !isXml)
+		{
+			std::cout << "\033[1;31mArgument -x or -t is missing !\033[0m" << std::endl << "See usage below for more detail." << std::endl;
+			appInfo::print_usage();
+			return 0;
+		}
 	} else {
 		appInfo::print_usage();
 		return 0;
