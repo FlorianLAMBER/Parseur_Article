@@ -139,12 +139,15 @@ int main(int argc,char** argv)
 		FILE * pFile;									//Pour lire le fichier ./application.txt
 		FILE * pFile2;									//Pour écrire dans le fichier txt
 		folder_info* workspaceInfo;						//Permet d'avoir tous les fichier pdf dans une classe .
-		if (hasInput && !hasOutput){
+		
+		if (hasInput && !hasOutput)
+		{
 			workspaceInfo = new folder_info(inputFolder);
 		}
 		else if (hasInput && hasOutput){
 			workspaceInfo = new folder_info(inputFolder, outputFolder);
 		}
+
 		workspaceInfo->update_pdfList();
 		std::vector<std::string> pdf_vect = workspaceInfo->get_pdfList();
 		for (auto it = pdf_vect.begin(); it != pdf_vect.end(); it++)    
@@ -160,9 +163,18 @@ int main(int argc,char** argv)
 				fichierpdf=fichierpdf.replace(fichierpdf.find(" "),1,"_");
 			}
 			fichierTxt=strdup(fichierpdf.data());
-			fichierTxt[fichierpdf.size()-3]='t';
-			fichierTxt[fichierpdf.size()-2]='x';
-			fichierTxt[fichierpdf.size()-1]='t';
+			if(isTxt)
+			{
+				fichierTxt[fichierpdf.size()-3]='t';
+				fichierTxt[fichierpdf.size()-2]='x';
+				fichierTxt[fichierpdf.size()-1]='t';
+			}
+			if(isXml)
+			{
+				fichierTxt[fichierpdf.size()-3]='x';
+				fichierTxt[fichierpdf.size()-2]='m';
+				fichierTxt[fichierpdf.size()-1]='l';
+			}
 			fichierpdf=workspaceInfo->get_pdfFolder()+*it;
 			ExecuterPDF(fichierpdf.data(), appTxt);
 			pFile=fopen("./application.txt","r");
@@ -172,15 +184,41 @@ int main(int argc,char** argv)
 			boolean = 1;
 			fgets(Ligne,255,pFile);
 			RecupereDonnerLigne=strtok(Ligne," \n\t");
-			fputs("Titre du fichier : ",pFile2);
+			if(isTxt)
+			{
+				fputs("Titre du fichier : ",pFile2);
+			}
+			if(isXml)
+			{
+				fputs("<article>\n",pFile2);
+				fputs("\t<preambule>",pFile2);
+			}
+			
 			fichierpdf=*it;
 			while(fichierpdf.find(" ") != std::string::npos){
 				fichierpdf=fichierpdf.replace(fichierpdf.find(" "),1,"_");
 			}
 			fputs(fichierpdf.data(),pFile2);
-			fputs("\n",pFile2);
+			// Writre with different format
+			if(isTxt)
+			{
+				fputs("\n",pFile2);
+			}
+			if(isXml)
+			{
+				fputs("</preambule>\n",pFile2);
+			}
+			
 			/*Recupération du block ou se trouve le titre du document .*/
-			fputs("Titre :",pFile2);
+			if(isTxt)
+			{
+				fputs("Titre :",pFile2);
+			}
+			if(isXml)
+			{
+				fputs("\t<titre>",pFile2);
+			}
+
 			while (boolean == 1){
 
 				/*Si dans RecupereDonnerLigne il ressemble à <block 
@@ -249,11 +287,27 @@ int main(int argc,char** argv)
 					boolean=1;
 				}
 			}
-			fputs("\n",pFile2);
+			if(isTxt)
+			{
+				fputs("\n",pFile2);
+			}
+			if(isXml)
+			{
+				fputs("</titre>\n",pFile2);
+			}
+
 
 			/*Recupération du block ou se trouve Abstract ou 
 			We,This,As,In si Abstract n'est pas présent dans le fichier*/
-			fputs("Abstract :",pFile2);
+			if(isTxt)
+			{
+				fputs("Abstract :",pFile2);
+			}
+			if(isXml)
+			{
+				fputs("\t<abstract>",pFile2);
+			}
+
 			while (boolean == 1){
 
 				/*Si RecupereDonnerLigne est <block alors 
@@ -382,7 +436,20 @@ int main(int argc,char** argv)
 					boolean=0;
 				}
 			}
-			fputs("\n",pFile2);
+			if(isTxt)
+			{
+				fputs("\n",pFile2);
+			}
+			if(isXml)
+			{
+				fputs("\t</abstract>\n",pFile2);
+			}
+
+
+			if(isXml)
+			{
+				fputs("</article>\n",pFile2);
+			}
 			fclose(pFile2);
 			fclose(pFile);
 		}
