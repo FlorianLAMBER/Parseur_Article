@@ -19,11 +19,13 @@ void appInfo::print_release() {
 void appInfo::print_usage() 
 {
         std::cout << std::endl << appInfo::PROGNAME << std::endl;
-        std::cout << "Usage:" << appInfo::PROGNAME << "& [-i | --input] | [-h | --help] | [-v | --version] | [-o | --output]  "<< std::endl;
+        std::cout << "Usage:" << appInfo::PROGNAME << "& [-i | --input] & [-x | --xml] & [-t | --txt] | [-h | --help] | [-v | --version] | [-o | --output]  "<< std::endl;
         std::cout << "\t\t-h  Hepl" << std::endl;
         std::cout << "\t\t-v  Version" << std::endl;
         std::cout << "\t\t-i  Input folder, in this folder you may have all your pdf" << std::endl;
         std::cout << "\t\t-o  Output folder (./output/ by default)" << std::endl;
+        std::cout << "\t\t-t  Output will be in txt" << std::endl;
+        std::cout << "\t\t-x  Output will be in xml)" << std::endl;
         std::cout << std::endl << "Example : ./" << appInfo::PROGNAME << " -i /PATH/TO/ALL/PDF -o /PATH/TO/OUTPUT" << std::endl;
         std::cout << std::endl << "DESCRIPTION DE L'APP A FAIRE :)" << std::endl;
 }

@@ -41,6 +41,8 @@ int main(int argc,char** argv)
 {
 	int hasOutput = 0;
 	int hasInput = 0;
+	int isTxt = 0;
+	int isXml = 0;
 	std::string inputFolder, outputFolder;
 	#ifdef DEBUG
 		std::cout << "argc = " << argc << std::endl;
@@ -82,6 +84,28 @@ int main(int argc,char** argv)
 					std::cout << "Your input folder is " << inputFolder << std::endl;
 				#endif
 				i++;
+				continue;
+			}
+			if(currentArg == "-t" || currentArg == "--txt")
+			{
+				if(isXml)
+				{
+					std::cout << "\033[1;31mCan't take -x and -t !\033[0m" << std::endl;
+					appInfo::print_usage();
+					return 0;
+				}
+				isTxt = 1;
+				continue;
+			}
+			if(currentArg == "-x" || currentArg == "--xml")
+			{
+				if(isTxt)
+				{
+					std::cout << "\033[1;31mCan't take -x and -t !\033[0m" << std::endl;
+					appInfo::print_usage();
+					return 0;
+				}
+				isXml = 1;
 				continue;
 			}
 
@@ -129,9 +153,9 @@ int main(int argc,char** argv)
 			Creation du workspaceInfo de sortie . 
 			Création application.txt et cration du fichier txt liéer au pdf*/
 			fichierpdf=workspaceInfo->get_outputFolder()+*it;
-			if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
+//			if (!std::filesystem::exists(workspaceInfo->get_outputFolder())){
 				mkdir(workspaceInfo->get_outputFolder().data(),S_IRWXU |S_IRGRP | S_IXGRP |S_IROTH | S_IXOTH );//Création du workspaceInfo
-			}
+//			}
 			while(fichierpdf.find(" ") != std::string::npos){
 				fichierpdf=fichierpdf.replace(fichierpdf.find(" "),1,"_");
 			}
