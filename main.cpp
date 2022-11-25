@@ -301,18 +301,28 @@ int main(int argc,char** argv)
 			{
 				fputs("</titre>\n",pFile2);
 			}
+			
+			
+			
 
 
-			/*Recupération du block ou se trouve Abstract ou 
-			We,This,As,In si Abstract n'est pas présent dans le fichier*/
+			/*Recuperation des infos des auteurs : nom, prenom, adresse*///--------------PARTIE AUTEUR
+			
+			
+			
 			if(isTxt)
 			{
-				fputs("Abstract :",pFile2);
+				fputs("Auteur :",pFile2);
 			}
 			if(isXml)
 			{
-				fputs("\t<abstract>",pFile2);
+				fputs("\t<auteur>",pFile2);
 			}
+
+
+
+			
+			
 
 			while (boolean == 1){
 
@@ -321,8 +331,11 @@ int main(int argc,char** argv)
 				S'y il est à plus de 300 cela veut dire que se mot provient 
 				de la colonne qui est à droit du document
 				(S'y il y en a une ) */
+				/*Recupération du block ou se trouve Abstract ou //--------------------------PARTIE ABSTRACT
+				We,This,As,In si Abstract n'est pas présent dans le fichier*/
 
 				if (strcmp(RecupereDonnerLigne,"<block")==0){
+					
 
 					/*Je fais 2 fgets pour aller*/
 
@@ -360,16 +373,149 @@ int main(int argc,char** argv)
 
 						std::string trouverAbstract = RecuperationPartieDonnerLigne;
 						if (trouverAbstract.find("Abstract") != std::string::npos || 
+						strcmp(RecuperationPartieDonnerLigne,"ABSTRACT") == 0 ||
 						strcmp(RecuperationPartieDonnerLigne,"This") == 0 || 
 						strcmp(RecuperationPartieDonnerLigne,"As") == 0|| 
 						strcmp(RecuperationPartieDonnerLigne,"In") == 0|| 
 						strcmp(RecuperationPartieDonnerLigne,"We") == 0){
+							if(isTxt)
+							{
+								fputs("\nAbstract :",pFile2);
+							}
+							if(isXml)
+							{
+								fputs("</auteur>\n\t<abstract>",pFile2);
+							}
 							boolean=0;
 							if (strcmp(RecuperationPartieDonnerLigne,"Abstract") != 0){
 								fputs(RecuperationPartieDonnerLigne,pFile2);
 								fputs(" ",pFile2);
 							}
 						}
+						else{//----------------------------------------------PARTIE AUTEUR
+							int mail=0;
+							boolean=0;
+							while(RecuperationPartieDonnerLigne[boolean]!='\0'){
+								if(RecuperationPartieDonnerLigne[boolean]=='@'){
+									mail=1;
+								}
+								boolean++;
+							}
+							boolean=1;
+							if( mail == 0 ){
+								fputs(RecuperationPartieDonnerLigne,pFile2);
+								fputs(" ",pFile2);
+							}
+							while (strcmp(RecupereDonnerLigne,"</block>")!=0){
+								if(strcmp(RecupereDonnerLigne,"<word")==0){
+
+									
+									/*Pour accéder à la partie ou se trouve le mot*/
+									
+									int mail=0;
+
+									for (int i=0 ; i<4 ; i++){
+										RecupereDonnerLigne=strtok(NULL," \t\n");
+									}
+									RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
+									RecuperationPartieDonnerLigne=strtok(NULL," <>");
+									boolean=0;
+									while(RecuperationPartieDonnerLigne[boolean]!='\0'){
+										if(RecuperationPartieDonnerLigne[boolean]=='@'){
+											mail=1;
+										}
+										boolean++;
+									}
+									boolean=1;
+									if( mail != 0 ){
+										boolean=0;
+									}
+									else if(strcmp(RecuperationPartieDonnerLigne,"\\")!=0){
+										fputs(RecuperationPartieDonnerLigne,pFile2);
+										fputs(" ",pFile2);
+									}
+									fgets(Ligne,255,pFile);
+									RecupereDonnerLigne=strtok(Ligne," \t\n");
+									
+
+								}
+								else{
+									fgets(Ligne,255,pFile);
+									RecupereDonnerLigne=strtok(Ligne," \t\n");
+
+								}
+							}
+							boolean=1;
+						}
+					}
+					else{//---------AUTEUR QUAND ON EST A DROITE DE LA PAGE (xmin > 300)
+
+						RecupereDonnerLigne=strtok(Ligne," \t\n");
+
+						/*Pour accéder à la partie ou se trouve le mot*/
+
+						for (int i=0 ; i<4 ; i++){
+							RecupereDonnerLigne=strtok(NULL," \t\n");
+						}
+						RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
+						RecuperationPartieDonnerLigne=strtok(NULL," <>");
+
+
+						int mail=0;
+						boolean=0;
+						while(RecuperationPartieDonnerLigne[boolean]!='\0'){
+							if(RecuperationPartieDonnerLigne[boolean]=='@'){
+								mail=1;
+							}
+							boolean++;
+						}
+						boolean=1;
+						if( mail == 0 ){
+							fputs(RecuperationPartieDonnerLigne,pFile2);
+							fputs(" ",pFile2);
+						}
+
+
+						while (strcmp(RecupereDonnerLigne,"</block>")!=0){
+							if(strcmp(RecupereDonnerLigne,"<word")==0){
+
+								
+								/*Pour accéder à la partie ou se trouve le mot*/
+								
+								int mail=0;
+
+								for (int i=0 ; i<4 ; i++){
+									RecupereDonnerLigne=strtok(NULL," \t\n");
+								}
+								RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
+								RecuperationPartieDonnerLigne=strtok(NULL," <>");
+								boolean=0;
+								while(RecuperationPartieDonnerLigne[boolean]!='\0'){
+									if(RecuperationPartieDonnerLigne[boolean]=='@'){
+										mail=1;
+									}
+									boolean++;
+								}
+								boolean=1;
+								if( mail != 0 ){
+									boolean=0;
+								}
+								else if(strcmp(RecuperationPartieDonnerLigne,"\\")!=0){
+									fputs(RecuperationPartieDonnerLigne,pFile2);
+									fputs(" ",pFile2);
+								}
+								fgets(Ligne,255,pFile);
+								RecupereDonnerLigne=strtok(Ligne," \t\n");
+								
+
+							}
+							else{
+								fgets(Ligne,255,pFile);
+								RecupereDonnerLigne=strtok(Ligne," \t\n");
+
+							}
+						}
+						boolean=1;
 					}
 				}
 
@@ -380,7 +526,7 @@ int main(int argc,char** argv)
 					RecupereDonnerLigne=strtok(Ligne," \t\n");
 					
 				}
-			}
+			}//---------------------------------------------------LA ON PRENDS VRAIMENT ABSTRACT
 			boolean=1;
 			
 			fgets(Ligne,255,pFile);
