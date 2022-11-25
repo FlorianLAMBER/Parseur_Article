@@ -13,14 +13,19 @@
 #include <filesystem>
 
 /*Fonction permettant d'exécuter la fonction pdftotext en c++*/
-int ExecuterPDF(const char* pdf, std::string txt){
+int ExecuterPDF(std::string pdf, std::string txt){
+	std::cout << pdf << std::endl;
     int pid;
     int res;
     int ret;
     int verification_commande;
+	std::string pdfChar = (  pdf);
+	std::cout << pdfChar << std::endl;
     pid=fork();
     if (pid==0){
-        verification_commande=execlp("pdftotext","pdftotext","-bbox-layout",pdf,txt.data(),NULL);
+		std::string cmd = "pdftotext -bbox-layout \"" + pdfChar + "\" " + txt;
+		std::cout << cmd << std::endl; 
+       verification_commande= std::system((cmd).data());
         if (verification_commande == -1) {
             exit(254);
         }
@@ -34,6 +39,7 @@ int ExecuterPDF(const char* pdf, std::string txt){
         return 255;
     }
 }
+
 
 
 
@@ -168,6 +174,7 @@ int main(int argc,char** argv)
 			while(fichierpdf.find(" ") != std::string::npos){
 				fichierpdf=fichierpdf.replace(fichierpdf.find(" "),1,"_");
 			}
+
 			fichierTxt=strdup(fichierpdf.data());
 			if(isTxt)
 			{

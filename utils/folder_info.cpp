@@ -78,7 +78,9 @@ std::string folder_info::get_outputFolder()
  */
 void folder_info::update_pdfList()
 {
-	std::string cmd = "ls " + this->get_pdfFolder() + " | grep .pdf";
+
+	std::string cmd = "ls \"" +  this->get_pdfFolder() + "\" | grep .pdf";
+
 	#ifdef DEBUG
 		std::cout << "Enter inside update_pdfList() :" << std::endl;
 	#endif
@@ -132,3 +134,4 @@ std::string folder_info::exec(const char* cmd)
     pclose(pipe);
     return result;
 }
+

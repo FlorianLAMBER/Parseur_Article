@@ -8,8 +8,9 @@ class folder_info
         std::string pdfFolder;
         std::vector<std::string> pdfList;
         std::string outputFolder;
+        
         std::string exec(const char* cmd);
-    	// Methode
+
     public:
         folder_info(std::string inPdfFolder);
         folder_info(std::string inPdfFolder, std::string inOutputFolder);
