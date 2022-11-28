@@ -40,7 +40,26 @@ int ExecuterPDF(std::string pdf, std::string txt){
     }
 }
 
+// accepts a string, checks for a number, if true, returns 1
+bool isNumber(const std::string& str)
+{
+    return std::all_of(str.begin(), str.end(), [](const char& ch) { return isdigit(ch); });
+}
 
+// accepts a string with double quotes, extracts a number between quotes
+float extractFromQuotes(std::string str) {
+    std::string tempStr = str;
+
+    auto pos = tempStr.find_last_of('"');
+    if (pos != std::string::npos)
+        tempStr.erase(pos, std::numeric_limits<std::string::size_type>::max());
+        
+    pos = tempStr.find_last_of('"');
+    if (pos != std::string::npos)
+        tempStr.erase(0, pos+1);
+
+    return std::stof(tempStr);
+}
 
 
 int main(int argc,char** argv)
@@ -605,23 +624,19 @@ int main(int argc,char** argv)
             }
             
             
-            //          References part (biblio)
+//          References part (biblio)
             
             if(isTxt)
-            {
                 fputs("Biblio :",pFile2);
-            }
+            
             if(isXml)
-            {
                 fputs("\t<biblio>",pFile2);
-            }
             
             boolean = 1;
             bool whitRef = true;
             
             while (boolean == 1){
-                
-                if (strcmp(RecupereDonnerLigne,"<block")==0){
+                if (strcmp(RecupereDonnerLigne,"<block") == 0){
                     
                     fgets(Ligne,255,pFile);
                     fgets(Ligne,255,pFile);
@@ -631,16 +646,37 @@ int main(int argc,char** argv)
                     for (int i=0; i<4; i++) {
                         RecupereDonnerLigne=strtok(NULL," \t\n");
                     }
-                    RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
-                    RecuperationPartieDonnerLigne=strtok(NULL," <>");
+                    
+                    RecuperationPartieDonnerLigne = strtok(RecupereDonnerLigne," <>");
+                    RecuperationPartieDonnerLigne = strtok(NULL," <>");
                     
                     std::string trouverAbstract = RecuperationPartieDonnerLigne;
-                    if (trouverAbstract.find("References") != std::string::npos ||
-                        trouverAbstract.find("REFERENCES") != std::string::npos ){
-                        boolean=0;
-                        if (strcmp(RecuperationPartieDonnerLigne,"References") != 0){
-                            fputs(RecuperationPartieDonnerLigne,pFile2);
-                            fputs(" ",pFile2);
+                    if (trouverAbstract == "References" ||
+                        trouverAbstract == "REFERENCES" ) {
+                        boolean = 0;
+                    }
+                    
+                    
+//  For an exception, if "R" and "eferences" are separate
+                    if (boolean == 1) {
+                        if (trouverAbstract == "R") {
+                            fgets(Ligne,255,pFile);
+                            RecupereDonnerLigne=strtok(Ligne," \t\n");
+                            
+                            if (strcmp(RecupereDonnerLigne,"<word")==0){
+                                for (int i=0; i<4; i++) {
+                                    RecupereDonnerLigne=strtok(NULL," \t\n");
+                                }
+                                
+                                RecuperationPartieDonnerLigne = strtok(RecupereDonnerLigne," <>");
+                                RecuperationPartieDonnerLigne = strtok(NULL," <>");
+
+                                std::string trouverAbstract = RecuperationPartieDonnerLigne;
+                                if (trouverAbstract == "eferences" ||
+                                    trouverAbstract == "EFERENCES" ) {
+                                    boolean = 0;
+                                }
+                            }
                         }
                     }
                 } else{
@@ -671,15 +707,25 @@ int main(int argc,char** argv)
                     if (strcmp(RecupereDonnerLigne,"<word") == 0){
                         for (int i=0; i<4; i++) {
                             RecupereDonnerLigne=strtok(NULL," \t\n");
+                            
+                            if (i == 0) {
+                                strcpy(CopieLigneQuOnEtudie,RecupereDonnerLigne);
+                            }
                         }
                         
                         RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
                         RecuperationPartieDonnerLigne=strtok(NULL," <>");
                         
-                        fputs(RecuperationPartieDonnerLigne,pFile2);
-                        fputs(" ",pFile2);
-                        fgets(Ligne,255,pFile);
-                        RecupereDonnerLigne=strtok(Ligne," \t\n");
+// centering check
+                        if (!(extractFromQuotes(CopieLigneQuOnEtudie) > 293
+                              && extractFromQuotes(CopieLigneQuOnEtudie) < 304
+                            && isNumber(RecuperationPartieDonnerLigne)) == 1) {
+                            
+                            fputs(RecuperationPartieDonnerLigne,pFile2);
+                            fputs(" ",pFile2);
+                            fgets(Ligne,255,pFile);
+                            RecupereDonnerLigne=strtok(Ligne," \t\n");
+                        }
                     }
                     else if (strcmp(RecupereDonnerLigne,"</line>")==0
                              || strcmp(RecupereDonnerLigne,"<line")==0 ){
@@ -690,15 +736,8 @@ int main(int argc,char** argv)
                         fgets(Ligne,255,pFile);
                         RecupereDonnerLigne=strtok(Ligne," \t\n");
                         
-                        
-                        //                      for case where :  </block> </flow> <flow> <block
                         if (strcmp(RecupereDonnerLigne,"</flow>") == 0 ) {
                             fgets(Ligne,255,pFile);
-                        }
-                        
-                        if (strcmp(RecupereDonnerLigne,"<line") == 0 ) {
-                            if(isTxt) { fputs("\n",pFile2); }
-                            if(isXml) { fputs("\n\t\t",pFile2); }
                         }
                         
                         if (strcmp(RecupereDonnerLigne,"</doc>") == 0 || strcmp(RecupereDonnerLigne,"</body>") == 0) {
@@ -711,19 +750,16 @@ int main(int argc,char** argv)
             }
             
             if(isTxt)
-            {
                 fputs("\n",pFile2);
-            }
-            if(isXml)
-            {
-                fputs("\n\t</biblio>\n",pFile2);
-            }
-            
             
             if(isXml)
-            {
+                fputs("</biblio>\n",pFile2);
+            
+            
+            
+            if(isXml)
                 fputs("</article>\n",pFile2);
-            }
+            
             fclose(pFile2);
             fclose(pFile);
         }
