@@ -15,6 +15,7 @@ const std::string folder_info::DEFAULT_OUTPUT = "output/";
 /**
  * @brief Construct a new folder info::folder info object
  * 
+ * 
  * @param inPdfFolder String who is the path to the pdf's folder.
  */
 folder_info::folder_info(std::string inPdfFolder)
