@@ -442,7 +442,7 @@ void DirectionVersMotAbstractOuEquivalent(FILE* pFile, FILE* pFile2){
  * @param pFile File where we read information
  * @param pFile2 File where we write information
  */
-void ChercheMotAprèsAbstractOuEquivalent(FILE* pFile,FILE* pFile2){
+void ChercheMotApresAbstractOuEquivalent(FILE* pFile,FILE* pFile2){
     fgets(Ligne,255,pFile);
     /*Dans le cas ou le mot suivant Abstarct,We,In,This,As
         n'est pas à la suite on va vers le prochain <word*/
@@ -551,14 +551,14 @@ void EcritureAbstract(FILE* pFile,FILE* pFile2){
     }
 }
 /**
- * @brief Group function EcritureAbstract,ChercheMotAprèsAbstractOuEquivalent and DirectionVersMotAbstractOuEquivalent
+ * @brief Group function EcritureAbstract,ChercheMotApresAbstractOuEquivalent and DirectionVersMotAbstractOuEquivalent
  * @authors : Maxime Jullien,Emmanuel Aubertin
  * @param pFile File where we read information
  * @param pFile2 File where we write information
  */
 void Abstract(FILE* pFile,FILE* pFile2){
     DirectionVersMotAbstractOuEquivalent(pFile,pFile2);
-    ChercheMotAprèsAbstractOuEquivalent(pFile,pFile2);
+    ChercheMotApresAbstractOuEquivalent(pFile,pFile2);
     EcritureAbstract(pFile,pFile2);
     if(isTxt)
     {
