@@ -22,7 +22,8 @@ double xMin;									//Permettera de récupérer la position d'un éléments
 double xMin2;									//Permettera de récupérer la position d'un éléments
 int isTxt = 0;
 int isXml = 0;
-bool whitRef = true;
+bool whithRef = true;
+bool whithIntro = true;
 
 /**
  * @brief Perform commande pdftotext with parameters
@@ -62,6 +63,19 @@ int ExecuterPDF(std::string pdf, std::string txt){
 bool isNumber(const std::string& str)
 {
     return std::all_of(str.begin(), str.end(), [](const char& ch) { return isdigit(ch); });
+}
+
+
+/**
+ * @brief The function is necessary to track the specified characters
+ * @authors : Temkaieva Svitlana
+ * @param pdf String, one word from a line.
+ */
+bool invalidCharacter(std::string str) {
+    if (str == "&amp;" || str == "&lt;")
+        return true;
+    
+    return false;
 }
 
 /**
@@ -315,7 +329,6 @@ void Auteur(FILE* pFile,FILE* pFile2){
         else{
             fgets(Ligne,255,pFile);
             RecupereDonnerLigne=strtok(Ligne," \t\n");
-            
         }
     }
     
@@ -571,6 +584,258 @@ void Abstract(FILE* pFile,FILE* pFile2){
 }
 
 /**
+ * @brief Go to the world Introduction
+ * @authors : Temkaieva Svitlana
+ * @param pFile File where we read information
+ * @param pFile2 File where we write information
+ */
+float AllerVersIntroduction(FILE* pFile,FILE* pFile2){
+    boolean = 1;
+    whithRef = true;
+    float yMinIntroduction = 0;
+    float yMaxIntroduction = 0;
+    
+    while (boolean == 1) {
+        if (strcmp(RecupereDonnerLigne,"<block") == 0){
+            
+            fgets(Ligne,255,pFile);
+            fgets(Ligne,255,pFile);
+            
+            strcpy(CopieLigneQuOnEtudie,Ligne);
+            RecupereDonnerLigne=strtok(Ligne," \t\n");
+            
+            for (int i=0; i<4; i++) {
+                RecupereDonnerLigne=strtok(NULL," \t\n");
+                
+                if (i == 1) {
+                    yMinIntroduction = extractFromQuotes(RecupereDonnerLigne);
+                }
+
+                if (i == 3 ) {
+                    yMaxIntroduction = extractFromQuotes(RecupereDonnerLigne);
+                }
+                
+            }
+            
+            RecuperationPartieDonnerLigne = strtok(RecupereDonnerLigne," <>");
+            RecuperationPartieDonnerLigne = strtok(NULL," <>");
+            
+            std::string trouverAbstract = RecuperationPartieDonnerLigne;
+            
+            if (trouverAbstract == "Introduction" ||
+                trouverAbstract == "INTRODUCTION" ) {
+                boolean = 0;
+            }
+            
+            //  For an exception, if "I." or "I" and "Introduction" are separate
+            if (boolean == 1) {
+                if (trouverAbstract == "I.") {
+                    fgets(Ligne,255,pFile);
+                    RecupereDonnerLigne=strtok(Ligne," \t\n");
+
+                    if (strcmp(RecupereDonnerLigne,"<word")==0){
+                        for (int i=0; i<4; i++) {
+                            RecupereDonnerLigne=strtok(NULL," \t\n");
+                        }
+
+                        RecuperationPartieDonnerLigne = strtok(RecupereDonnerLigne," <>");
+                        RecuperationPartieDonnerLigne = strtok(NULL," <>");
+
+                        std::string trouverAbstract = RecuperationPartieDonnerLigne;
+                        if (trouverAbstract == "I") {
+                            fgets(Ligne,255,pFile);
+                            RecupereDonnerLigne=strtok(Ligne," \t\n");
+
+                            if (strcmp(RecupereDonnerLigne,"<word")==0){
+                                for (int i=0; i<4; i++) {
+                                    RecupereDonnerLigne=strtok(NULL," \t\n");
+                                }
+
+                                RecuperationPartieDonnerLigne = strtok(RecupereDonnerLigne," <>");
+                                RecuperationPartieDonnerLigne = strtok(NULL," <>");
+
+                                std::string trouverAbstract = RecuperationPartieDonnerLigne;
+                                if (trouverAbstract == "ntroduction" ||
+                                    trouverAbstract == "NTRODUCTION" ) {
+                                    boolean = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            //  For an exception, if "1." or "1" and "Introduction" are separate
+            if (boolean == 1) {
+                if (trouverAbstract == "1." or trouverAbstract == "1") {
+                    fgets(Ligne,255,pFile);
+                    RecupereDonnerLigne=strtok(Ligne," \t\n");
+
+                    if (strcmp(RecupereDonnerLigne,"<word")==0){
+                        for (int i=0; i<4; i++) {
+                            RecupereDonnerLigne=strtok(NULL," \t\n");
+                        }
+
+                        RecuperationPartieDonnerLigne = strtok(RecupereDonnerLigne," <>");
+                        RecuperationPartieDonnerLigne = strtok(NULL," <>");
+
+                        std::string trouverAbstract = RecuperationPartieDonnerLigne;
+                        if (trouverAbstract == "Introduction" ||
+                            trouverAbstract == "INTRODUCTION" ) {
+                            boolean = 0;
+                        }
+                    }
+                }
+            }
+        } else{
+            fgets(Ligne,255,pFile);
+            RecupereDonnerLigne=strtok(Ligne," \t\n");
+            
+        }
+        
+        if (strcmp(RecupereDonnerLigne,"</doc>")==0
+            || strcmp(RecupereDonnerLigne,"</body>")==0) {
+            boolean = 0;
+            whithIntro = false;
+        }
+    }
+    
+//  get hight
+    return yMaxIntroduction - yMinIntroduction;
+}
+
+/**
+ * @brief Write information about Introduction
+ * @authors : Temkaieva Svitlana
+ * @param pFile File where we read information
+ * @param pFile2 File where we write information
+ */
+void EcritureIntroduction(FILE*pFile, FILE* pFile2) {
+    std::string motAbstract=RecuperationPartieDonnerLigne;
+    std::string motAvecMajuscule="\0";
+    
+    boolean=1;
+    int numWords = 100;
+    
+    if (whithIntro) {
+        fgets(Ligne,255,pFile);
+        
+        strcpy(CopieLigneQuOnEtudie,Ligne);
+        RecupereDonnerLigne=strtok(CopieLigneQuOnEtudie," \t\n");
+        
+        RecupereDonnerLigne=strtok(Ligne," \t\n");
+        
+        while(numWords > 0){
+            if (strcmp(RecupereDonnerLigne,"<word") == 0){
+                for (int i=0; i<4; i++) {
+                    RecupereDonnerLigne=strtok(NULL," \t\n");
+                    
+                    if (i == 0) {
+                        strcpy(CopieLigneQuOnEtudie,RecupereDonnerLigne);
+                    }
+                }
+                
+                RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
+                RecuperationPartieDonnerLigne=strtok(NULL," <>");
+                
+                // centering check
+                if (!(extractFromQuotes(CopieLigneQuOnEtudie) > 293
+                        && extractFromQuotes(CopieLigneQuOnEtudie) < 304
+                    && isNumber(RecuperationPartieDonnerLigne)) == 1
+                    && !invalidCharacter(RecuperationPartieDonnerLigne)) {
+                    motAbstract=RecuperationPartieDonnerLigne;
+                    if (motAbstract[motAbstract.length()-1] == '-'){
+                        if(motAvecMajuscule=="\0"){
+                            motAbstract[motAbstract.size()-1] ='\0';
+                            fputs(motAbstract.data(),pFile2);
+                        }
+                        else{
+                            motAbstract[motAbstract.length()-1] ='\0';
+                            fputs(motAvecMajuscule.data(),pFile2);
+                            fputs(" ",pFile2);
+                            fputs(motAbstract.data(),pFile2);
+                            fputs(" ",pFile2);
+                            motAvecMajuscule='\0';
+                        }
+                    }
+                    else if (isupper(motAbstract[motAbstract.length()-1])!=0 ){
+                        if(motAvecMajuscule=="\0"){
+                            motAvecMajuscule=motAbstract;
+                        }
+                        else{
+                            fputs(motAvecMajuscule.data(),pFile2);
+                            fputs(motAbstract.data(),pFile2);
+                            fputs(" ",pFile2);
+                            motAvecMajuscule="\0";
+                        }
+                    }
+                    else{
+                        if(motAvecMajuscule=="\0"){
+                            fputs(RecuperationPartieDonnerLigne,pFile2);
+                            fputs(" ",pFile2);
+                        }
+                        else{
+                            fputs(motAvecMajuscule.data(),pFile2);
+                            fputs(" ",pFile2);
+                            fputs(RecuperationPartieDonnerLigne,pFile2);
+                            fputs(" ",pFile2);
+                            motAvecMajuscule="\0";
+                        }
+                    }
+                    fgets(Ligne,255,pFile);
+                    RecupereDonnerLigne=strtok(Ligne," \t\n");
+                }
+            }
+            else if (strcmp(RecupereDonnerLigne,"</line>")==0
+                        || strcmp(RecupereDonnerLigne,"<line")==0 ){
+                
+                fgets(Ligne,255,pFile);
+                RecupereDonnerLigne=strtok(Ligne," \t\n");
+            }
+            else{
+                fgets(Ligne,255,pFile);
+                RecupereDonnerLigne=strtok(Ligne," \t\n");
+                
+                if (strcmp(RecupereDonnerLigne,"</flow>") == 0 ) {
+                    fgets(Ligne,255,pFile);
+                }
+            }
+            
+            numWords--;
+        }
+    } else {
+        fputs("\t Couldn't read 'References'", pFile2);
+    }
+    
+    fputs("...",pFile2);
+}
+                       
+/**
+* @brief WGroup function EcritureIntroduction and AllerVersIntroduction
+* @authors : Svitlana Temkaieva
+* @param pFile File where we read information
+* @param pFile2 File where we write information
+*/
+void Introduction(FILE* pFile,FILE* pFile2){
+   if(isTxt)
+       fputs("Introduction :", pFile2);
+   
+   if(isXml)
+       fputs("\t<introduction>", pFile2);
+                
+   AllerVersIntroduction(pFile, pFile2);
+   EcritureIntroduction(pFile, pFile2);
+                
+   if(isTxt)
+       fputs("\n", pFile2);
+   
+   if(isXml)
+       fputs("</introduction>\n", pFile2);
+}
+
+
+
+/**
  * @brief Go to the world References
  * @authors : Temkaieva Svitlana , Florian Lambert
  * @param pFile File where we read information
@@ -578,7 +843,7 @@ void Abstract(FILE* pFile,FILE* pFile2){
  */
 void AllerVersReference(FILE* pFile,FILE* pFile2){
     boolean = 1;
-    whitRef = true;
+    whithRef = true;
     
     while (boolean == 1){
         if (strcmp(RecupereDonnerLigne,"<block") == 0){
@@ -633,10 +898,11 @@ void AllerVersReference(FILE* pFile,FILE* pFile2){
         if (strcmp(RecupereDonnerLigne,"</doc>")==0
             || strcmp(RecupereDonnerLigne,"</body>")==0) {
             boolean = 0;
-            whitRef = false;
+            whithRef = false;
         }
     }
 }
+
 /**
  * @brief Write information about References
  * @authors : Temkaieva Svitlana , Florian Lambert,Maxime Jullien , Emmanuel Aubertin
@@ -644,11 +910,10 @@ void AllerVersReference(FILE* pFile,FILE* pFile2){
  * @param pFile2 File where we write information
  */
 void EcritureBibliographie(FILE*pFile,FILE* pFile2){
-    std::string motAbstract=RecuperationPartieDonnerLigne;
-    std::string motAvecMajuscule="\0";
-    boolean=1;
-    if (whitRef) {
-        
+    std::string motAbstract = RecuperationPartieDonnerLigne;
+    std::string motAvecMajuscule = "\0";
+    boolean = 1;
+    if (whithRef) {
         fgets(Ligne,255,pFile);
         
         strcpy(CopieLigneQuOnEtudie,Ligne);
@@ -656,7 +921,7 @@ void EcritureBibliographie(FILE*pFile,FILE* pFile2){
         
         RecupereDonnerLigne=strtok(Ligne," \t\n");
         
-        while(boolean==1){
+        while(boolean == 1){
             if (strcmp(RecupereDonnerLigne,"<word") == 0){
                 for (int i=0; i<4; i++) {
                     RecupereDonnerLigne=strtok(NULL," \t\n");
@@ -672,15 +937,17 @@ void EcritureBibliographie(FILE*pFile,FILE* pFile2){
                 // centering check
                 if (!(extractFromQuotes(CopieLigneQuOnEtudie) > 293
                         && extractFromQuotes(CopieLigneQuOnEtudie) < 304
-                    && isNumber(RecuperationPartieDonnerLigne)) == 1) {
+                    && isNumber(RecuperationPartieDonnerLigne)) == 1
+                    && !invalidCharacter(RecuperationPartieDonnerLigne)) {
+                    
                     motAbstract=RecuperationPartieDonnerLigne;
                     if (motAbstract[motAbstract.length()-1] == '-'){
                         if(motAvecMajuscule=="\0"){
-                            motAbstract[motAbstract.size()-1] ='\0';
-                            fputs(motAbstract.data(),pFile2);
+                            motAbstract[motAbstract.size()-1] = '\0';
+                            fputs(motAbstract.data(), pFile2);
                         }
                         else{
-                            motAbstract[motAbstract.length()-1] ='\0';
+                            motAbstract[motAbstract.length()-1] = '\0';
                             fputs(motAvecMajuscule.data(),pFile2);
                             fputs(" ",pFile2);
                             fputs(motAbstract.data(),pFile2);
@@ -688,7 +955,7 @@ void EcritureBibliographie(FILE*pFile,FILE* pFile2){
                             motAvecMajuscule='\0';
                         }
                     }
-                    else if (isupper(motAbstract[motAbstract.length()-1])!=0 ){
+                    else if (isupper(motAbstract[motAbstract.length()-1]) != 0 ){
                         if(motAvecMajuscule=="\0"){
                             motAvecMajuscule=motAbstract;
                         }
@@ -696,11 +963,11 @@ void EcritureBibliographie(FILE*pFile,FILE* pFile2){
                             fputs(motAvecMajuscule.data(),pFile2);
                             fputs(motAbstract.data(),pFile2);
                             fputs(" ",pFile2);
-                            motAvecMajuscule="\0";
+                            motAvecMajuscule = "\0";
                         }
                     }  
                     else{
-                        if(motAvecMajuscule=="\0"){
+                        if(motAvecMajuscule == "\0"){
                             fputs(RecuperationPartieDonnerLigne,pFile2);
                             fputs(" ",pFile2);
                         }
@@ -709,7 +976,7 @@ void EcritureBibliographie(FILE*pFile,FILE* pFile2){
                             fputs(" ",pFile2);
                             fputs(RecuperationPartieDonnerLigne,pFile2);
                             fputs(" ",pFile2);
-                            motAvecMajuscule="\0";
+                            motAvecMajuscule = "\0";
                         }
                     }
                     fgets(Ligne,255,pFile);
@@ -760,6 +1027,7 @@ void Bibliographie(FILE* pFile,FILE* pFile2){
         fputs("</biblio>\n",pFile2);
             
 }
+
 int main(int argc,char** argv)
 {
     int hasOutput = 0;
@@ -938,6 +1206,9 @@ int main(int argc,char** argv)
             
             //------------------------------------------------------------------------PARTIE ABSTRACT
             Abstract(pFile,pFile2);
+            
+//          Introduction part
+            Introduction(pFile,pFile2);
             
 //          References part (biblio)
             Bibliographie(pFile,pFile2);
