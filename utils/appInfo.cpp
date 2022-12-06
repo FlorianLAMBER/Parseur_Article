@@ -27,7 +27,9 @@ void appInfo::print_usage()
         std::cout << "\t\t-t  Output will be in txt" << std::endl;
         std::cout << "\t\t-x  Output will be in xml)" << std::endl;
         std::cout << std::endl << "Example : ./" << appInfo::PROGNAME << " -i /PATH/TO/ALL/PDF -o /PATH/TO/OUTPUT" << std::endl;
-        std::cout << std::endl << "DESCRIPTION DE L'APP A FAIRE :)" << std::endl;
+        std::cout << std::endl << "DESCRIPTION :" << std::endl;
+        std::cout << std::endl << "This app use the pdftotext technologies for transform a science based article" << std::endl;
+        std::cout << std::endl << "into a more readable txt or xml file." << std::endl;
 }
 
 void appInfo::print_help() {
