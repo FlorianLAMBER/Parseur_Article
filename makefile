@@ -26,11 +26,11 @@ build: FTXUI/build
 install: 
 	@echo "$(COLOR)[32m--------| $(COLOR)[1mInstallation of dependencies :$(COLOR)[0m$(COLOR)[32m |--------$(COLOR)[0m"
 	$(install_cmd)
-	mkdir FTXUI/build
 	@echo "$(COLOR)[32m\tDONE$(COLOR)[0m\n"
 
 clone: install
 	git clone https://github.com/Fliche/Parseur_Article
+	mkdir FTXUI/build
 	@echo "$(COLOR)[32m\tEVERYTHINK IS DONE$(COLOR)[0m\n"
 
 .PHONY: all build
