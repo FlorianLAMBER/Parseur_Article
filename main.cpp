@@ -673,22 +673,18 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
     }
 }
 
-int main(int argc,char** argv)
+int main(int argc, char** argv)
 {
     int hasOutput = 0;
     int hasInput = 0;
+    int isPdfList = 0;
+    std::vector<std::string> pdfList;
     std::string inputFolder, outputFolder;
-#ifdef DEBUG
-    std::cout << "argc = " << argc << std::endl;
-#endif
     if (argc >= 1 )
     {
         for(int i=1; i < argc; i++)
         {
             std::string currentArg = std::string(argv[i]);
-#ifdef DEBUG
-            std::cout << "\targv[" << i <<"] = " << argv[i] << std::endl;
-#endif
             if(currentArg == "-v" || currentArg == "--version")
             {
                 appInfo::print_release();
@@ -742,6 +738,24 @@ int main(int argc,char** argv)
                 isXml = 1;
                 continue;
             }
+
+            if(currentArg == "-p" || currentArg == "--pdf")
+            {
+              //  int j = 0;
+                while( i < argc-1 )
+                {
+                    if(argv[i+1][0] == '-')
+                    {
+                        break;
+                    }
+                    i++;
+                    std::cout << "PDF : " << argv[i] << std::endl;
+                    pdfList.push_back(argv[i]);
+                    
+                }
+                isPdfList = 1;
+                continue;
+            }
             
             std::cout << "Unknow argument " << argv[i] << ", see usage below for more detail." << std::endl;
             appInfo::print_usage();
@@ -771,18 +785,25 @@ int main(int argc,char** argv)
         std::string appTxt = "./application.txt";				//Sa sera le fichier txt qui recevra tous les resultats de la commande pdftotext
         folder_info* workspaceInfo;						//Permet d'avoir tous les fichier pdf dans une classe .
         FILE * pFile;									//Pour lire le fichier ./application.txt
-        FILE * pFile3;									//Pour lire le fichier2 ./application.txt
         FILE * pFile2;									//Pour écrire dans le fichier txt
-
-        if (hasInput && !hasOutput)
+        FILE * pFile3;									//Pour écrire dans le fichier txt
+        
+        if (hasInput && !hasOutput && !isPdfList)
         {
+            //std::cout << "With inputFolder" << std::endl;
             workspaceInfo = new folder_info(inputFolder);
         }
-        else if (hasInput && hasOutput){
+        else if (hasInput && hasOutput && !isPdfList){
+            //std::cout << "With inputFolder && hasOutput" << std::endl;
             workspaceInfo = new folder_info(inputFolder, outputFolder);
+        } else {
+            //std::cout << "With inputFolder && hasOutput && isPdfList" << std::endl;
+            workspaceInfo = new folder_info(inputFolder, outputFolder, pdfList);
         }
         
-        workspaceInfo->update_pdfList();
+        if(!isPdfList){
+            workspaceInfo->update_pdfList();
+        }
         std::vector<std::string> pdf_vect = workspaceInfo->get_pdfList();
         for (auto it = pdf_vect.begin(); it != pdf_vect.end(); it++)
         {

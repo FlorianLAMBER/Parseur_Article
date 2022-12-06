@@ -37,7 +37,7 @@ folder_info::folder_info(std::string inPdfFolder)
  * @param inPdfFolder String who is the path to the pdf's folder.
  * @param inOutputFolder Name/path of the ouput folder
  */
-folder_info::folder_info(std::string inPdfFolder,std::string inOutputFolder)
+folder_info::folder_info(std::string inPdfFolder, std::string inOutputFolder)
 {
 	if(inPdfFolder.back() != '/')
         {               
@@ -53,6 +53,53 @@ folder_info::folder_info(std::string inPdfFolder,std::string inOutputFolder)
                 this->outputFolder = inOutputFolder;
         }
 }
+
+
+
+/**
+ *  @brief Construct a new folder info::folder info object
+ * 
+ * 
+ * @param inPdfFolder String who is the path to the pdf's folder.
+ */
+folder_info::folder_info(std::string inPdfFolder, std::string inOutputFolder, std::vector<std::string> vPdf)
+{
+        this->pdfList = vPdf;
+	if(inPdfFolder.back() != '/')
+        {               
+                this->pdfFolder = inPdfFolder+"/";
+        } else {        
+                this->pdfFolder = inPdfFolder;
+        }
+	
+	if(inOutputFolder.back() != '/')
+        {
+                this->outputFolder = inOutputFolder+"/";
+        } else {        
+                this->outputFolder = inOutputFolder;
+        }
+}
+
+
+/**
+ *  @brief Construct a new folder info::folder info object
+ * 
+ * 
+ * @param inPdfFolder String who is the path to the pdf's folder.
+ */
+folder_info::folder_info(std::string inPdfFolder, std::vector<std::string> vPdf)
+{
+        this->pdfList = vPdf;
+	if(inPdfFolder.back() != '/')
+	{
+		this->pdfFolder = inPdfFolder+"/";
+		this->outputFolder = inPdfFolder + DEFAULT_OUTPUT;
+	} else {
+		this->pdfFolder = inPdfFolder;
+		this->outputFolder = inPdfFolder + DEFAULT_OUTPUT;
+	}
+}
+
 
 /**
  * @brief Getter of the pdfFolder
@@ -81,22 +128,12 @@ void folder_info::update_pdfList()
 {
 
 	std::string cmd = "ls \"" +  this->get_pdfFolder() + "\" | grep .pdf";
-
-	#ifdef DEBUG
-		std::cout << "Enter inside update_pdfList() :" << std::endl;
-	#endif
 	std::string cmd_output = this->exec(cmd.c_str());
-	#ifdef DEBUG
-		std::cout << "cmd_output :" <<  cmd_output << std::endl;
-	#endif
 
 	// See getline(X,T, ' ')
 	std::string line;
 	std::stringstream stream_cmd_output(cmd_output);
 	while(getline(stream_cmd_output, line)){
-		#ifdef DEBUG
-			std::cout << "Line : " << line << std::endl;
-		#endif
 		this->pdfList.push_back(line);
 	}
 }
