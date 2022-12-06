@@ -1,10 +1,10 @@
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	install_cmd := sudo apt install g++ git pdftotext
+	install_cmd := sudo apt install g++ git pdftotext cmake
 	COLOR := "\\e"
 endif
 ifeq ($(UNAME_S),Darwin)
-	install_cmd := brew install gcc git poppler
+	install_cmd := brew install gcc git poppler cmake
 	COLOR := "\\x1b"
 endif
 all:	build
