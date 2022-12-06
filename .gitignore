@@ -4,6 +4,10 @@
 *.gch
 .vscode
 Article_handler
+Article_handler_menu
 .DS_Store
 CORPUS_TRAIN/
 output/
+*.xml
+*.txt
+temp.main.cpp
