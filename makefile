@@ -15,7 +15,7 @@ clean:
 	mkdir FTXUI/build
 	@echo "$(COLOR)[32m\tDONE$(COLOR)[0m"
 
-build: FTXUI/build
+build:
 	@echo "$(COLOR)[32m--------| $(COLOR)[1mBuild Article_handler binary:$(COLOR)[0m$(COLOR)[32m |--------$(COLOR)[0m"
 	cd FTXUI/build && cmake .. && make 
 	g++ -std=c++17 main.cpp utils/appInfo.cpp utils/appInfo.hpp utils/folder_info.cpp utils/folder_info.hpp
