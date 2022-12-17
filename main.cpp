@@ -661,7 +661,7 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                     /*Je vais regarder maintenant si le mot corresppond et un titre ( si il est après introduction alors cela veut dire qu'on est dans le corps)*/
                                     else if(corpsTrouver==0 && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && compteurMotApresIntroduction<5){
                                         /*Si pour introduction , on avait un chiffre romain alors je regarde si le titre à comme chiffre Romain 2*/
-                                        if (detecteurRomain==1 && trouverAbstract.find("II")!=std::string::npos){
+                                        if (detecteurRomain==1 && ( trouverAbstract=="II.")){
                                             /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                 fputs("</introduction>\n",pFile2);
@@ -678,7 +678,7 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                 fputs(" ",pFile2); 
                                             }
                                         }
-                                        else if (detecteurChiffre==1 && trouverAbstract.find("2")!=std::string::npos){
+                                        else if (detecteurChiffre==1 && (trouverAbstract=="2" || trouverAbstract=="2.")){
                                             /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                 fputs("</introduction>\n",pFile2);
@@ -708,7 +708,9 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             corpsTrouver=1;
                                         }
                                     }
-                                    else if (aPassez==0 && (discussionTrouver==1 || conclusionTrouver==1) && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && (trouverAbstract=="A" || trouverAbstract=="ACKNOWLEDGMENTS" || trouverAbstract=="ACKNOWLEDGMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") ){
+                                    else if (aPassez==0 && (discussionTrouver==1 || conclusionTrouver==1) && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && 
+                                    (trouverAbstract=="A" || trouverAbstract=="ACKNOWLEDGMENTS" || trouverAbstract=="ACKNOWLEDGMENT" || trouverAbstract=="Acknowledgment" || trouverAbstract=="Acknowledgments" 
+                                    || trouverAbstract=="ACKNOWLEDGEMENTS" || trouverAbstract=="ACKNOWLEDGEMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") ){
                                         if (trouverAbstract=="A"){
                                             std::string sauvegardeMot=trouverAbstract;
                                             recupereLigneColonne(pFile);
@@ -723,7 +725,8 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
                                             RecuperationPartieDonnerLigne=strtok(NULL," <>");
                                             trouverAbstract=RecuperationPartieDonnerLigne;
-                                            if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT"){
+                                            if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT" || trouverAbstract=="cknowledgments" || trouverAbstract=="CKNOWLEDGMENTS" || 
+                                            trouverAbstract=="cknowledegment" || trouverAbstract=="CKNOWLEDGEMENT" || trouverAbstract=="cknowledegments" || trouverAbstract=="CKNOWLEDEGMENTS"){
                                                 aPassez=1;
                                             }
                                             else{
@@ -1527,7 +1530,7 @@ int main(int argc, char** argv)
                                     /*Je vais regarder maintenant si le mot corresppond et un titre ( si il est après introduction alors cela veut dire qu'on est dans le corps)*/
                                     else if(corpsTrouver==0 && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && compteurMotApresIntroduction<5){
                                         /*Si pour introduction , on avait un chiffre romain alors je regarde si le titre à comme chiffre Romain 2*/
-                                        if (detecteurRomain==1 && trouverAbstract.find("II")!=std::string::npos){
+                                        if (detecteurRomain==1 && (trouverAbstract=="II.")){
                                             /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                 fputs("</introduction>\n",pFile2);
@@ -1544,7 +1547,7 @@ int main(int argc, char** argv)
                                                 fputs(" ",pFile2); 
                                             }
                                         }
-                                        else if (detecteurChiffre==1 && trouverAbstract.find("2")!=std::string::npos){
+                                        else if (detecteurChiffre==1 && (trouverAbstract=="2" || trouverAbstract=="2.")){
                                             /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                 fputs("</introduction>\n",pFile2);
@@ -1574,7 +1577,9 @@ int main(int argc, char** argv)
                                             corpsTrouver=1;
                                         }
                                     }
-                                    else if (aPassez==0 && (discussionTrouver==1 || conclusionTrouver==1) && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && (trouverAbstract=="A" || trouverAbstract=="ACKNOWLEDGMENTS" || trouverAbstract=="ACKNOWLEDGMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") ){
+                                    else if (aPassez==0 && (discussionTrouver==1 || conclusionTrouver==1) && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && 
+                                    (trouverAbstract=="A" || trouverAbstract=="ACKNOWLEDGMENTS" || trouverAbstract=="ACKNOWLEDGMENT" || trouverAbstract=="Acknowledgment" || trouverAbstract=="Acknowledgments" 
+                                    || trouverAbstract=="ACKNOWLEDGEMENTS" || trouverAbstract=="ACKNOWLEDGEMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") ){
                                             if (trouverAbstract=="A"){
                                                 std::string sauvegardeMot=trouverAbstract;
                                                 recupereLigneNormal(pFile,pFile3);
@@ -1589,8 +1594,8 @@ int main(int argc, char** argv)
                                                 RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
                                                 RecuperationPartieDonnerLigne=strtok(NULL," <>");
                                                 trouverAbstract=RecuperationPartieDonnerLigne;
-                                                if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT"){
-                                                    aPassez=1;
+                                            if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT" || trouverAbstract=="cknowledgments" || trouverAbstract=="CKNOWLEDGMENTS" || 
+                                            trouverAbstract=="cknowledegment" || trouverAbstract=="CKNOWLEDGEMENT" || trouverAbstract=="cknowledegments" || trouverAbstract=="CKNOWLEDEGMENTS"){                                                    aPassez=1;
                                                 }
                                                 else{
                                                     fputs(sauvegardeMot.data(),pFile2);
