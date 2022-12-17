@@ -724,8 +724,6 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             RecuperationPartieDonnerLigne=strtok(NULL," <>");
                                             trouverAbstract=RecuperationPartieDonnerLigne;
                                             if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT"){
-                                                std::cout<<trouverAbstract.data()<<std::endl;
-                                                std::cout<<std::endl;
                                                 aPassez=1;
                                             }
                                             else{
@@ -736,8 +734,6 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             }
                                         }
                                         else{
-                                            std::cout<<trouverAbstract.data()<<std::endl;
-                                            std::cout<<std::endl;
                                             aPassez=1;
                                         }
                                     }
@@ -759,12 +755,7 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             fputs(" ",pFile2);
                                         }   
                                     }
-                                    else{
-                                        std::cout<<trouverAbstract.data()<<" ";
-                                    }
                                 }
-                                else{
-                                    std::cout<<RecuperationPartieDonnerLigne<<"         "<<yMin<<std::endl;                                }
                             }
                             /*Dans le cas ou le mot n'est pas un titre de paragraphe alors j'écrit dans le fichier de sortie celon si le fichier doit etre en txt ou xml*/
                                 else{
@@ -1255,9 +1246,6 @@ int main(int argc, char** argv)
                                         }
                                         if(sauvegardeMot=="1" || sauvegardeMot=="1."){
                                             detecteurChiffre=1;
-                                            std::cout<<*it<<std::endl;
-                                            detecteurChiffre=1;
-                                            std::cout<<detecteurChiffre<<std::endl;
                                         }
                                         /*Je récupère la dimensions de l'introduction que je mets dans la varaible dimensionsImportants*/
                                         recuperationDimensionDesTitresParagraphes();
@@ -1446,7 +1434,6 @@ int main(int argc, char** argv)
                                                 }
                                                 /*Si je suis dans la discussion alors je la ferme*/
                                                 else if(discussionTrouver==1){
-                                                    std::cout<<conclusionTrouver<<std::endl;
                                                     fputs("</discussion>\n",pFile2);
                                                 }
                                                 /*Si je suis dans le corps alors je la ferme*/
@@ -1490,7 +1477,6 @@ int main(int argc, char** argv)
                                                             }
                                                             fputs("\t<conclusion>",pFile2);
                                                         }
-                                                        std::cout<<"je suis rentrez 3"<<std::endl;
                                                         aPassez=0;
                                                         while(strcmp(RecupereDonnerLigne,"<line")!=0){
                                                             recupereLigneNormal(pFile,pFile3);
@@ -1514,7 +1500,6 @@ int main(int argc, char** argv)
                                                 }
                                                 fputs("\t<conclusion>",pFile2);
                                             }
-                                            std::cout<<"je suis rentrez 4"<<std::endl;
                                             aPassez=0;
                                                         while(strcmp(RecupereDonnerLigne,"<line")!=0){
                                                             recupereLigneNormal(pFile,pFile3);
@@ -1605,8 +1590,6 @@ int main(int argc, char** argv)
                                                 RecuperationPartieDonnerLigne=strtok(NULL," <>");
                                                 trouverAbstract=RecuperationPartieDonnerLigne;
                                                 if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT"){
-                                                    std::cout<<trouverAbstract.data()<<std::endl;
-                                                    std::cout<<std::endl;
                                                     aPassez=1;
                                                 }
                                                 else{
@@ -1617,8 +1600,6 @@ int main(int argc, char** argv)
                                                 }
                                             }
                                             else{
-                                                std::cout<<trouverAbstract.data()<<std::endl;
-                                                std::cout<<std::endl;
                                                 aPassez=1;
                                             }
                                     }
@@ -1640,12 +1621,7 @@ int main(int argc, char** argv)
                                             fputs(" ",pFile2);
                                         }   
                                     }
-                                    else{
-                                        std::cout<<trouverAbstract.data()<<" ";
-                                    }
                                 }
-                                else{
-                                    std::cout<<RecuperationPartieDonnerLigne<<"         "<<yMin<<std::endl;                                }
                             }
                             /*Dans le cas ou le mot n'est pas un titre de paragraphe alors j'écrit dans le fichier de sortie celon si le fichier doit etre en txt ou xml*/
                             else{
@@ -1689,7 +1665,6 @@ int main(int argc, char** argv)
             fclose(pFile3);
             fclose(pFile2);
             fclose(pFile);
-            std::cout<<std::endl;
         }
         remove("./application.txt");
     }
