@@ -4,6 +4,18 @@ Article_handler est un analyseur d'articles scientifiques. Son but est de vous p
 Actuellement, il est possible de trouver le titre et le résumé de vos articles scientifiques ainsi que la bibliothèque des réferences et les informations des auteurs (adresse postal). Tout cela en un temps suffisamment court.
 ## Prise en main:
 
+./Article_handler -i chemin_dossier_des_pdf/ -o chemin_dossier_de_sortie -t
+
+	-t peut être changé par -x, selon l'envie d'avoir des fichiers au format txt ou au format xml.
+	
+./Article_handler_menu
+
+	une interface graphique permet de séléctionner, au clavier, le dossier d'entrée (celui des fichiers PDF), le dossier de sortie, les PDF du dossier que l'on souhaite convertir et finalement Get XML ou Get Txt.
+	
+	La selection se fait avec les flèches puis entrer pour confirmer.
+	
+	si besoin, il est possible de reset les sélections.
+
 ### Compilation et dependance :
 
 Pour compiler et installer les dépendances sur Debian/Ubuntu et MacOS, vous pouvez utiliser le makefile qui fera tout. Pour ce faire, utilisez la commande suivante :
