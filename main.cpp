@@ -35,6 +35,7 @@ double dimensionsImportant;                     //Permet d'avoir la dimensions d
 int compteurMotApresIntroduction;               //Ce compteur sert à ce que des mots qui suivent l'introduction qui ont une taille supérieur à égale à elle , ne déclenche pas le passement dans le corps
 int detecteurRomain;                            //Permet de savoir si on utilise des chiffres romains ou pas
 int detecteurChiffre;
+int aPassez;
 /**
  * @brief Perform commande pdftotext with parameters
  * @authors : Maxime Jullien,Emmanuel  Aubertin
@@ -502,6 +503,7 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                     }
                                                     fputs("\t<biblio>",pFile2);
                                                 }
+                                                aPassez=0;
                                                 referenceTrouver=1;
                                             }
                                             /*Sinon alors ce n'étais pas la references */
@@ -532,6 +534,7 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                 }
                                                 fputs("\t<biblio>",pFile2);
                                             }
+                                            aPassez=0;
                                             referenceTrouver=1;
                                         }
                                         /*J'initialise la variable referenceTrouver pour dire que j'ai trouver la parti reference du document*/
@@ -566,8 +569,11 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                             }
                                                             fputs("\t<conclusion>",pFile2);
                                                         }
-                                                                                                    std::cout<<"je suis rentrez 1"<<std::endl;
                                                         conclusionTrouver=1;
+                                                        while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                            recupereLigneColonne(pFile);
+                                                        }
+                                                        aPassez=0;
                                                     }
                                                     else{
                                                         fputs(sauvegardeMot.data(),pFile2);
@@ -586,8 +592,10 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                 }
                                                 fputs("\t<conclusion>",pFile2);
                                             }
-                                                                                        std::cout<<"je suis rentrez 2"<<std::endl;
-
+                                            aPassez=0;
+                                                while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                    recupereLigneColonne(pFile);
+                                                }
                                             conclusionTrouver=1;
                                         }
                                     }
@@ -606,6 +614,10 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                 }
                                                 fputs("\t<discussion>",pFile2);
                                             }
+                                            aPassez=0;
+                                                while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                    recupereLigneColonne(pFile);
+                                                }
                                             discussionTrouver=1;
                                         }
                                         else{
@@ -632,7 +644,11 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                     }
                                                     fputs("\t<discussion>",pFile2);
                                                 }
+                                                aPassez=0;
                                                 discussionTrouver=1;
+                                                while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                    recupereLigneColonne(pFile);
+                                                }
                                             }
                                             else{
                                                 fputs(sauvegardeMot.data(),pFile2);
@@ -692,8 +708,41 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             corpsTrouver=1;
                                         }
                                     }
+                                    else if (aPassez==0 && (discussionTrouver==1 || conclusionTrouver==1) && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && (trouverAbstract=="A" || trouverAbstract=="ACKNOWLEDGMENTS" || trouverAbstract=="ACKNOWLEDGMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") ){
+                                        if (trouverAbstract=="A"){
+                                            std::string sauvegardeMot=trouverAbstract;
+                                            recupereLigneColonne(pFile);
+                                            if(strcmp(RecupereDonnerLigne,"</line>")==0){
+                                                while(strcmp(RecupereDonnerLigne,"<word")!=0){
+                                                    recupereLigneColonne(pFile);
+                                                }
+                                            }
+                                            for (int i=0 ; i<4 ; i++){
+                                                RecupereDonnerLigne=strtok(NULL," \t\n");
+                                            }
+                                            RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
+                                            RecuperationPartieDonnerLigne=strtok(NULL," <>");
+                                            trouverAbstract=RecuperationPartieDonnerLigne;
+                                            if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT"){
+                                                std::cout<<trouverAbstract.data()<<std::endl;
+                                                std::cout<<std::endl;
+                                                aPassez=1;
+                                            }
+                                            else{
+                                                fputs(sauvegardeMot.data(),pFile2);
+                                                fputs(" ",pFile2); 
+                                                fputs(trouverAbstract.data(),pFile2);
+                                                fputs(" ",pFile2); 
+                                            }
+                                        }
+                                        else{
+                                            std::cout<<trouverAbstract.data()<<std::endl;
+                                            std::cout<<std::endl;
+                                            aPassez=1;
+                                        }
+                                    }
                                     /*Si le mot n'est pas un titre qu'on cherche alors j'écrit dans le fichier de sortie celon si le fichier doit etre en txt ou xml*/
-                                    else{
+                                    else if (aPassez==0){
                                         /*Si c'est un fichier txt il faut vérifier qu'on est dans la partie de l'abstract pour écrire dans le fichier txt*/
                                         if (isTxt && abstractTrouver==1 && introductionTrouver==0){
                                             fputs(trouverAbstract.data(),pFile2);
@@ -709,6 +758,9 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             fputs(trouverAbstract.data(),pFile2);
                                             fputs(" ",pFile2);
                                         }   
+                                    }
+                                    else{
+                                        std::cout<<trouverAbstract.data()<<" ";
                                     }
                                 }
                                 else{
@@ -899,6 +951,7 @@ int main(int argc, char** argv)
             referenceTrouver=0;                 //J'initialise que je n'est pas trouver la référence dans le fichier pdf
             detecteurRomain=0;                  //J'initialise que je n'est pas trouver de chiffre romain dans un titre de paragraphe dans le fichier pdf
             detecteurChiffre=0;
+            aPassez=0;
             /*Récupération nom du fichier et du dossier .
              Creation du workspaceInfo de sortie .
              Création application.txt et cration du fichier txt liéer au pdf*/
@@ -1370,6 +1423,7 @@ int main(int argc, char** argv)
                                                     fputs("\t<biblio>",pFile2);
                                                 }
                                                 /*J'initialise la variable referenceTrouver pour dire que j'ai trouver la parti reference du document*/
+                                                aPassez=0;
                                                 referenceTrouver=1;
                                             }
                                             /*Sinon alors ce n'étais pas la references */
@@ -1402,6 +1456,7 @@ int main(int argc, char** argv)
                                                 fputs("\t<biblio>",pFile2);
                                             }
                                             /*J'initialise la variable referenceTrouver pour dire que j'ai trouver la parti reference du document*/
+                                            aPassez=0;
                                             referenceTrouver=1;
                                         }
                                     }
@@ -1436,6 +1491,10 @@ int main(int argc, char** argv)
                                                             fputs("\t<conclusion>",pFile2);
                                                         }
                                                         std::cout<<"je suis rentrez 3"<<std::endl;
+                                                        aPassez=0;
+                                                        while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                            recupereLigneNormal(pFile,pFile3);
+                                                        }
                                                         conclusionTrouver=1;
                                                     }
                                                     else{
@@ -1456,6 +1515,10 @@ int main(int argc, char** argv)
                                                 fputs("\t<conclusion>",pFile2);
                                             }
                                             std::cout<<"je suis rentrez 4"<<std::endl;
+                                            aPassez=0;
+                                                        while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                            recupereLigneNormal(pFile,pFile3);
+                                                        }
                                             conclusionTrouver=1;
                                         }
                                     }
@@ -1469,6 +1532,10 @@ int main(int argc, char** argv)
                                                 fputs("</corps>\n",pFile2);
                                             }
                                             fputs("\t<discussion>",pFile2);
+                                        }
+                                        aPassez=0;
+                                       while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                            recupereLigneNormal(pFile,pFile3);
                                         }
                                         discussionTrouver=1;
                                     }
@@ -1522,8 +1589,41 @@ int main(int argc, char** argv)
                                             corpsTrouver=1;
                                         }
                                     }
+                                    else if (aPassez==0 && (discussionTrouver==1 || conclusionTrouver==1) && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && (trouverAbstract=="A" || trouverAbstract=="ACKNOWLEDGMENTS" || trouverAbstract=="ACKNOWLEDGMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") ){
+                                            if (trouverAbstract=="A"){
+                                                std::string sauvegardeMot=trouverAbstract;
+                                                recupereLigneNormal(pFile,pFile3);
+                                                if(strcmp(RecupereDonnerLigne,"</line>")==0){
+                                                    while(strcmp(RecupereDonnerLigne,"<word")!=0){
+                                                        recupereLigneNormal(pFile,pFile3);
+                                                    }
+                                                }
+                                                for (int i=0 ; i<4 ; i++){
+                                                    RecupereDonnerLigne=strtok(NULL," \t\n");
+                                                }
+                                                RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
+                                                RecuperationPartieDonnerLigne=strtok(NULL," <>");
+                                                trouverAbstract=RecuperationPartieDonnerLigne;
+                                                if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT"){
+                                                    std::cout<<trouverAbstract.data()<<std::endl;
+                                                    std::cout<<std::endl;
+                                                    aPassez=1;
+                                                }
+                                                else{
+                                                    fputs(sauvegardeMot.data(),pFile2);
+                                                    fputs(" ",pFile2); 
+                                                    fputs(trouverAbstract.data(),pFile2);
+                                                    fputs(" ",pFile2); 
+                                                }
+                                            }
+                                            else{
+                                                std::cout<<trouverAbstract.data()<<std::endl;
+                                                std::cout<<std::endl;
+                                                aPassez=1;
+                                            }
+                                    }
                                     /*Si le mot n'est pas un titre qu'on cherche alors j'écrit dans le fichier de sortie celon si le fichier doit etre en txt ou xml*/
-                                    else{
+                                    else if (aPassez==0){
                                         /*Si c'est un fichier txt il faut vérifier qu'on est dans la partie de l'abstract pour écrire dans le fichier txt*/
                                         if (isTxt && abstractTrouver==1 && introductionTrouver==0){
                                             fputs(trouverAbstract.data(),pFile2);
@@ -1539,6 +1639,9 @@ int main(int argc, char** argv)
                                             fputs(trouverAbstract.data(),pFile2);
                                             fputs(" ",pFile2);
                                         }   
+                                    }
+                                    else{
+                                        std::cout<<trouverAbstract.data()<<" ";
                                     }
                                 }
                                 else{
@@ -1586,6 +1689,7 @@ int main(int argc, char** argv)
             fclose(pFile3);
             fclose(pFile2);
             fclose(pFile);
+            std::cout<<std::endl;
         }
         remove("./application.txt");
     }
