@@ -20,9 +20,18 @@ Actuellement, il est possible de trouver le titre et le résumé de vos articles
 
 Pour compiler et installer les dépendances sur Debian/Ubuntu et MacOS, vous pouvez utiliser le makefile qui fera tout. Pour ce faire, utilisez la commande suivante :
 ```bash
-curl https://raw.githubusercontent.com/Fliche/Parseur_Article/main/makefile && make clone 
+curl https://raw.githubusercontent.com/Fliche/Parseur_Article/sprint5/makefile && make clone 
+```
+Si vous n'avez pas la commande curl vous pouvez le faire comme ceci : 
+```bash
+wget https://raw.githubusercontent.com/Fliche/Parseur_Article/sprint5/makefile && make clone 
 ```
 
+### Installation :
+Accéder dans le dossier Parseur_Article qu'il vient d'etre créer, est réaliser la commande suivant : 
+```bash
+make
+```
 ## Utiliser Article_handler :
 
 Une fois compilé et installé, l'utilisation du scanner est assez simple.
@@ -44,15 +53,13 @@ Exemple d'utilisation :
 
 ## Utiliser l'interface graphique :
 
-l'utilisateur a la possibilité d'utiliser l'interface graphique dans notre programme.
+L'utilisateur à la possibilité d'utiliser une interface graphique pour notre programme.
 
 ```bash
-mkdir FTXUI/build && cd FTXUI/build && cmake .. && make && ./ftxui-starter
+./Article_handler_menu
 ```
 
-Attendez la fin du téléchargement.
-
-Après cela, vous arriverez à d interface graphique qui vous permettra d'utiliser la souris ou les touches: "haut", "bas", "tabulation"
+Après cela, vous arriverez à une interface graphique qui vous permettra d'utiliser la souris ou les touches: "haut", "bas", "tabulation"
 
 <img width="581" alt="Снимок экрана 2022-12-06 в 22 11 33" src="https://user-images.githubusercontent.com/32616842/208298024-eddbe29a-3de2-42fd-ab03-4e5dc11393d9.png">
 
