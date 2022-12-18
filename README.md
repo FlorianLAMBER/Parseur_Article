@@ -20,7 +20,7 @@ Actuellement, il est possible de trouver le titre et le résumé de vos articles
 
 Pour compiler et installer les dépendances sur Debian/Ubuntu et MacOS, vous pouvez utiliser le makefile qui fera tout. Pour ce faire, utilisez la commande suivante :
 ```bash
-curl https://raw.githubusercontent.com/Fliche/Parseur_Article/main/makefile && make clone && cd Parseur_Article && make
+curl https://raw.githubusercontent.com/Fliche/Parseur_Article/main/makefile && make clone 
 ```
 
 ## Utiliser Article_handler :
@@ -40,3 +40,39 @@ Exemple d'utilisation :
 
 ./Article_handler -i /PATH/TO/PDF -o /PATH/TO/RESULT -x # La sortie sera dans /PATH/TO/RESULT.xml
 ```
+
+
+## Utiliser l'interface graphique :
+
+l'utilisateur a la possibilité d'utiliser l'interface graphique dans notre programme.
+
+```bash
+mkdir FTXUI/build && cd FTXUI/build && cmake .. && make && ./ftxui-starter
+```
+
+Attendez la fin du téléchargement.
+
+Après cela, vous arriverez à d interface graphique qui vous permettra d'utiliser la souris ou les touches: "haut", "bas", "tabulation"
+
+<img width="581" alt="Снимок экрана 2022-12-06 в 22 11 33" src="https://user-images.githubusercontent.com/32616842/208298024-eddbe29a-3de2-42fd-ab03-4e5dc11393d9.png">
+
+Sélectionnez le dossier dans lequel vous souhaitez placer vos fichiers txt / xml
+
+<img width="1025" alt="Снимок экрана 2022-12-06 в 22 15 00" src="https://user-images.githubusercontent.com/32616842/208298136-56d3ad5b-230c-4c48-9c23-ef4b1343be14.png">
+
+Dans l'onglet "select pdf", vous pouvez sélectionner tout ou plusieurs documents à analyser.
+
+<img width="1014" alt="Снимок экрана 2022-12-06 в 22 15 19" src="https://user-images.githubusercontent.com/32616842/208298883-9584b209-74b1-4e38-8254-0e96a63a8435.png">
+
+Cliquez sur l'onglet "Output" adjacent.
+
+Sélectionnez le dossier dans lequel se trouvent vos fichiers pdf.
+
+<img width="1023" alt="Снимок экрана 2022-12-06 в 22 15 06" src="https://user-images.githubusercontent.com/32616842/208298461-ee81331a-b7e7-48f6-a976-cab79ee7cef6.png">
+
+Appuyez sur la touche "Get txt/xml"
+
+Le résultat se trouve dans le dossier sélectionné précédemment
+
+<img width="834" alt="Снимок экрана 2022-12-06 в 22 15 28" src="https://user-images.githubusercontent.com/32616842/208298551-0ab7989e-5401-4d0f-b47e-079f91651e32.png">
+
