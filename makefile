@@ -1,6 +1,6 @@
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	install_cmd := sudo apt install g++ git pdftotext cmake
+	install_cmd := sudo apt install g++ git poppler-utils cmake
 	COLOR := "\\e"
 endif
 ifeq ($(UNAME_S),Darwin)
@@ -29,8 +29,8 @@ install:
 	@echo "$(COLOR)[32m\tDONE$(COLOR)[0m\n"
 
 clone: install
-	git clone https://github.com/Fliche/Parseur_Article
-	mkdir FTXUI/build
+	git clone --branch sprint5 https://github.com/FlorianLAMBER/Parseur_Article.git
+	mkdir Parseur_Article/FTXUI/build
 	@echo "$(COLOR)[32m\tEVERYTHINK IS DONE$(COLOR)[0m\n"
 
 .PHONY: all build
