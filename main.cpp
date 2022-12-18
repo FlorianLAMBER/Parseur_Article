@@ -33,9 +33,10 @@ int discussionTrouver;                          //Permet de savoir si on a déja
 int referenceTrouver;                           //Permet de savoir si on a déja trouvé la partie reference
 double dimensionsImportant;                     //Permet d'avoir la dimensions des titres des paragraphes
 int compteurMotApresIntroduction;               //Ce compteur sert à ce que des mots qui suivent l'introduction qui ont une taille supérieur à égale à elle , ne déclenche pas le passement dans le corps
-int detecteurRomain;                            //Permet de savoir si on utilise des chiffres romains ou pas
-int detecteurChiffre;
-int aPassez;
+int detecteurRomain;                            //Permet de savoir si on utilise des chiffres romains pour les titresou pas
+int detecteurChiffre;                           //Permet de savoir si on utilise des chiffres pour les titres 
+int aPassez;                                    //Permet de savoir si lorsque on a passé la conclusion et/ou la discussion et qu'on est pas arrivé dans une autre partie qui nous intéresse 
+                                                    //alors on passe le contenu qui nous intéresse pas.
 /**
  * @brief Perform commande pdftotext with parameters
  * @authors : Maxime Jullien,Emmanuel  Aubertin
@@ -344,7 +345,10 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                         if(sauvegardeMot=="I."){
                                             detecteurRomain=1;
                                         }
+                                        /*Je met ma variable introductionTrouver pour me dire que j'ai déja trouver l'introduction et qu'il ne fat plus que je regarde pour l'introduction*/
                                         introductionTrouver=1;
+                                        /*J'initialise un compteur de mot apres l'introduction à 15 car cela me permet de n'avoir pas les élémenst qui font
+                                         la mème taille que les titres de directement me faire passer à une autre étape */
                                         compteurMotApresIntroduction=15;
                                     }
                                     /*Si le mot est I ou I. alors je rentre dedans*/
@@ -359,6 +363,8 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                         recuperationDimensionDesTitresParagraphes();
                                         /*J'initialise la variable introductionTrouver à 1 pour me permettre de ne plus rentrer dans cette aprtie de la fonction*/
                                         introductionTrouver=1;
+                                        /*J'initialise un compteur de mot apres l'introduction à 15 car cela me permet de n'avoir pas les élémenst qui font
+                                         la mème taille que les titres de directement me faire passer à une autre étape */
                                         compteurMotApresIntroduction=15;
                                         /*Permet d'aller vers une nouvelle du fichier*/
                                         recupereLigneColonne(pFile);
@@ -395,6 +401,8 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                         recuperationDimensionDesTitresParagraphes();
                                         /*J'initialise la variable introductionTrouver à 1 pour me permettre de ne plus rentrer dans cette aprtie de la fonction*/
                                         introductionTrouver=1;
+                                        /*J'initialise un compteur de mot apres l'introduction à 15 car cela me permet de n'avoir pas les élémenst qui font
+                                         la mème taille que les titres de directement me faire passer à une autre étape */
                                         compteurMotApresIntroduction=15;
                                     }
                                     /*Si le mot est I ou I. alors je rentre dedans*/
@@ -409,6 +417,8 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                         recuperationDimensionDesTitresParagraphes();
                                         /*J'initialise la variable introductionTrouver à 1 pour me permettre de ne plus rentrer dans cette aprtie de la fonction*/
                                         introductionTrouver=1;
+                                        /*J'initialise un compteur de mot apres l'introduction à 15 car cela me permet de n'avoir pas les élémenst qui font
+                                         la mème taille que les titres de directement me faire passer à une autre étape */
                                         compteurMotApresIntroduction=15;
                                         /*Permet d'aller vers une nouvelle du fichier*/
                                         recupereLigneColonne(pFile);
@@ -432,8 +442,10 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                 }
                                 /*Je récupère la dimensions de l'introduction que je mets dans la varaible dimensionsImportants*/
                                 recuperationDimensionDesTitresParagraphes();
-                                /*J'initialise la variable introductionTrouver à 1 pour me permettre de ne plus rentrer dans cette aprtie de la fonction*/
+                                /*J'initialise la variable introductionTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                 introductionTrouver=1;
+                                /*J'initialise un compteur de mot apres l'introduction à 15 car cela me permet de n'avoir pas les élémenst qui font
+                                 la mème taille que les titres de directement me faire passer à une autre étape */
                                 compteurMotApresIntroduction=15;
                             }
                         }
@@ -449,6 +461,8 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                 RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne,"=\"");
                                 RecuperationPartieDonnerLigne=strtok(NULL,"=\"");
                                 double yMin = atof(RecuperationPartieDonnerLigne);
+                                /*Je regarde si le yMin ne correpond pas à un haut de page ou un bas de page .
+                                Si non je continue*/
                                 if(50.0<=yMin && yMin<=(heigthPage-30)){
                                     strcpy(Ligne,CopieLigneQuOnEtudie);
                                     /*Je vais aller vers le yMax du mot*/
@@ -470,6 +484,7 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                         if (trouverAbstract == "R"){
                                             /*Je sauvegarde ce mot dans une variable string nommé sauvegardeMot*/
                                             std::string sauvegardeMot=trouverAbstract;
+                                            /*Je vais aller vers le prochain mot */
                                             recupereLigneColonne(pFile);
                                             if(strcmp(RecupereDonnerLigne,"</line>")==0){
                                                 while(strcmp(RecupereDonnerLigne,"<word")!=0){
@@ -485,9 +500,11 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             trouverAbstract=RecuperationPartieDonnerLigne;
                                             /*Je regarde si c'est EFERENCES ou eferences*/
                                             if (trouverAbstract == "EFERENCES" || trouverAbstract == "eferences"){
+                                                /*Si mon fichier de sortie doit etre en TXT alors je rentre dedans */
                                                 if(isTxt)
                                                     fputs("Biblio :",pFile2);
-                                                        
+                                                
+                                                /*Si mon fichier de sortie doit etre en XML alors je rentre dedans */
                                                 if(isXml){
                                                 /*Si je suis dans la conclusion alors je la ferme*/
                                                     if(conclusionTrouver==1){
@@ -503,7 +520,10 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                     }
                                                     fputs("\t<biblio>",pFile2);
                                                 }
+                                                /*Dans le cas ou j'était déja passez par la conclusiosn ou la discussion, 
+                                                je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
                                                 aPassez=0;
+                                                /*J'initialise la variable referenceTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                                 referenceTrouver=1;
                                             }
                                             /*Sinon alors ce n'étais pas la references */
@@ -516,9 +536,11 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                         }
                                         /*Dans le cas ou on a directement le mot reference*/
                                         else {
+                                            /*Si mon fichier de sortie doit etre en TXT alors je rentre dedans */
                                             if(isTxt)
                                                 fputs("Biblio :",pFile2);
                                                     
+                                            /*Si mon fichier de sortie doit etre en XML alors je rentre dedans */
                                             if(isXml){
                                                /*Si je suis dans la conclusion alors je la ferme*/
                                                 if(conclusionTrouver==1){
@@ -534,7 +556,10 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                 }
                                                 fputs("\t<biblio>",pFile2);
                                             }
+                                            /*Dans le cas ou j'était déja passez par la conclusiosn ou la discussion, 
+                                            je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
                                             aPassez=0;
+                                            /*J'initialise la variable referenceTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                             referenceTrouver=1;
                                         }
                                         /*J'initialise la variable referenceTrouver pour dire que j'ai trouver la parti reference du document*/
@@ -544,58 +569,79 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                     else if(conclusionTrouver==0 && referenceTrouver ==0 &&((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin )<= (dimensionsImportant+0.000003))) && (trouverAbstract =="Conclusion" || trouverAbstract =="Conclusions" ||
                                             trouverAbstract == "CONCLUSIONS" || 
                                             trouverAbstract == "ONCLUSIONS" || 
-                                            trouverAbstract == "C" )){
-                                                if (trouverAbstract == "C"){
-                                                    std::string sauvegardeMot=trouverAbstract;
+                                            trouverAbstract == "C" ))
+                                    {
+                                        /*Dans le cas ou je trouve C*/
+                                        if (trouverAbstract == "C"){
+                                            /*Je sauvegarde ce mot dans une variable string nommé sauvegardeMot*/
+                                            std::string sauvegardeMot=trouverAbstract;
+                                            /*Je vais aller vers le prochain mot */
+                                            recupereLigneColonne(pFile);
+                                            if(strcmp(RecupereDonnerLigne,"</line>")==0){
+                                                while(strcmp(RecupereDonnerLigne,"<word")!=0){
                                                     recupereLigneColonne(pFile);
-                                                    if(strcmp(RecupereDonnerLigne,"</line>")==0){
-                                                        while(strcmp(RecupereDonnerLigne,"<word")!=0){
-                                                            recupereLigneColonne(pFile);
-                                                        }
-                                                    }
-                                                    for (int i=0 ; i<4 ; i++){
-                                                        RecupereDonnerLigne=strtok(NULL," \t\n");
-                                                    }
-                                                    RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
-                                                    RecuperationPartieDonnerLigne=strtok(NULL," <>");
-                                                    trouverAbstract=RecuperationPartieDonnerLigne;
-                                                    if (trouverAbstract == "ONCLUSIONS"){
-                                                        if(isXml){
-                                                            if(discussionTrouver==1){
-                                                                fputs("</discussion>\n",pFile2);
-                                                            }
-                                                            else if(corpsTrouver==1){
-                                                                fputs("</corps>\n",pFile2);
-                                                            }
-                                                            fputs("\t<conclusion>",pFile2);
-                                                        }
-                                                        conclusionTrouver=1;
-                                                        while(strcmp(RecupereDonnerLigne,"<line")!=0){
-                                                            recupereLigneColonne(pFile);
-                                                        }
-                                                        aPassez=0;
-                                                    }
-                                                    else{
-                                                        fputs(sauvegardeMot.data(),pFile2);
-                                                        fputs(" ",pFile2); 
-                                                        fputs(trouverAbstract.data(),pFile2);
-                                                        fputs(" ",pFile2); 
-                                                    }
                                                 }
-                                        else {
-                                            if(isXml){
-                                                if(discussionTrouver==1){
-                                                    fputs("</discussion>\n",pFile2);
-                                                }
-                                                 else if(corpsTrouver==1){
-                                                    fputs("</corps>\n",pFile2);
-                                                }
-                                                fputs("\t<conclusion>",pFile2);
                                             }
-                                            aPassez=0;
+                                            /*Je vais aller chercher le contenu du mot*/
+                                            for (int i=0 ; i<4 ; i++){
+                                                RecupereDonnerLigne=strtok(NULL," \t\n");
+                                            }
+                                            RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
+                                            RecuperationPartieDonnerLigne=strtok(NULL," <>");
+                                            trouverAbstract=RecuperationPartieDonnerLigne;
+                                            /*Si mon mot correspon à ONCLUSIONS alors je rentre dedans*/
+                                            if (trouverAbstract == "ONCLUSIONS"){
+                                                /*Si mon fichier de sortie doit etre en XML alors je rentre dedans */
+                                                if(isXml){
+                                                    /*Si j'ai déja découvert une discussion alors je ferme la balise de la discussion*/
+                                                    if(discussionTrouver==1){
+                                                        fputs("</discussion>\n",pFile2);
+                                                    }
+                                                    /*Si j'ai découvert que le corps alors je ferme la balise du corp*/
+                                                    else if(corpsTrouver==1){
+                                                        fputs("</corps>\n",pFile2);
+                                                    }
+                                                    fputs("\t<conclusion>",pFile2);
+                                                }
+                                                /*J'initialise la variable conclusionTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
+                                                conclusionTrouver=1;
+                                                /*Je vais vers la prochaine ligne */
                                                 while(strcmp(RecupereDonnerLigne,"<line")!=0){
                                                     recupereLigneColonne(pFile);
                                                 }
+                                                /*Dans le cas ou j'était déja passez par la discussion, 
+                                                je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
+                                                aPassez=0;
+                                            }
+                                            /*Sinon si je trouve pas le mot conclusions alors j'écrit ce que javait trouvé dans le fichier de sortie*/
+                                            else{
+                                                fputs(sauvegardeMot.data(),pFile2);
+                                                fputs(" ",pFile2); 
+                                                fputs(trouverAbstract.data(),pFile2);
+                                                fputs(" ",pFile2); 
+                                            }
+                                        }
+                                        else {
+                                            /*Si mon fichier de sortie doit etre en XML alors je rentre dedans */
+                                                if(isXml){
+                                                    /*Si j'ai déja découvert une discussion alors je ferme la balise de la discussion*/
+                                                    if(discussionTrouver==1){
+                                                        fputs("</discussion>\n",pFile2);
+                                                    }
+                                                    /*Si j'ai découvert que le corps alors je ferme la balise du corp*/
+                                                    else if(corpsTrouver==1){
+                                                        fputs("</corps>\n",pFile2);
+                                                    }
+                                                    fputs("\t<conclusion>",pFile2);
+                                                }
+                                            /*Dans le cas ou j'était déja passez par la discussion, 
+                                            je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
+                                            aPassez=0;
+                                            /*Je vais vers la prochaine ligne */
+                                            while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                recupereLigneColonne(pFile);
+                                            }
+                                            /*J'initialise la variable conclusionTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                             conclusionTrouver=1;
                                         }
                                     }
@@ -604,52 +650,72 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                     else if(discussionTrouver==0 && referenceTrouver ==0 && ((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003))) && (trouverAbstract == "DISCUSSION" ||
                                             trouverAbstract == "Discussion" || 
                                             trouverAbstract == "ISCUSSION" || trouverAbstract == "D")){
+                                        /*Dans le cas ou je trouve D*/
                                         if(trouverAbstract != "D"){
+                                            /*Si mon fichier de sortie doit etre en XML alors je rentre dedans */
                                             if(isXml){
+                                                /*Si j'ai déja découvert une conclusion alors je ferme la balise de la conclusion*/
                                                 if(conclusionTrouver==1){
                                                     fputs("</conclusion>\n",pFile2);
                                                 }
+                                                /*Si j'ai que découvert que le corps alors je ferme la balise du corps*/
                                                 else if(corpsTrouver==1){
                                                     fputs("</corps>\n",pFile2);
                                                 }
                                                 fputs("\t<discussion>",pFile2);
                                             }
+                                            /*Dans le cas ou j'était déja passez par la conclusions, 
+                                            je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
                                             aPassez=0;
-                                                while(strcmp(RecupereDonnerLigne,"<line")!=0){
-                                                    recupereLigneColonne(pFile);
-                                                }
+                                            /*Je vais vers la prochaine ligne */
+                                            while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                recupereLigneColonne(pFile);
+                                            }
+                                            /*J'initialise la variable discussionTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                             discussionTrouver=1;
                                         }
                                         else{
+                                            /*Je sauvegarde ce mot dans une variable string nommé sauvegardeMot*/
                                             std::string sauvegardeMot=trouverAbstract;
+                                            /*Je vais aller vers le prochain mot */
                                             recupereLigneColonne(pFile);
                                             if(strcmp(RecupereDonnerLigne,"</line>")==0){
                                                 while(strcmp(RecupereDonnerLigne,"<word")!=0){
                                                     recupereLigneColonne(pFile);
                                                 }
                                             }
+                                            /*Je vais aller chercher le contenu du mot*/
                                             for (int i=0 ; i<4 ; i++){
                                                 RecupereDonnerLigne=strtok(NULL," \t\n");
                                             }
                                             RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
                                             RecuperationPartieDonnerLigne=strtok(NULL," <>");
                                             trouverAbstract=RecuperationPartieDonnerLigne;
+                                            /*Si je décrouvre iscussion ou ISCUSSION alors je rentre dedanns*/
                                             if(trouverAbstract=="iscussion" || trouverAbstract=="ISCUSSION"){
+                                                /*Si mon fichier de sortie doit etre en XML alors je rentre dedans */
                                                 if(isXml){
+                                                    /*Si j'ai déja découvert une conclusion alors je ferme la balise de la conclusion*/
                                                     if(conclusionTrouver==1){
                                                         fputs("</conclusion>\n",pFile2);
                                                     }
+                                                    /*Si j'ai que découvert que le corps alors je ferme la balise du corps*/
                                                     else if(corpsTrouver==1){
                                                         fputs("</corps>\n",pFile2);
                                                     }
                                                     fputs("\t<discussion>",pFile2);
                                                 }
+                                                /*Dans le cas ou j'était déja passez par la conclusions, 
+                                                je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
                                                 aPassez=0;
+                                                /*J'initialise la variable discussionTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                                 discussionTrouver=1;
+                                                 /*Je vais vers la prochaine ligne */
                                                 while(strcmp(RecupereDonnerLigne,"<line")!=0){
                                                     recupereLigneColonne(pFile);
                                                 }
                                             }
+                                            /*Sinon si je n'est pas découvert le mot discussion alors j'écrit dans le fichier de sortie les éléments qu'on a trouvé*/
                                             else{
                                                 fputs(sauvegardeMot.data(),pFile2);
                                                 fputs(" ",pFile2); 
@@ -672,12 +738,15 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             /*J'initialise la variable corpsTrouver pour permettre de savoir que j'ai découvert la partie corps du pdf*/
                                             corpsTrouver=1;
                                         }
+                                        /*Si pour introduction , on avait un chiffre romain et que ce n'est pas un titre alors j"cris dans le document les élémenst que j'ai trouvé*/
                                         else if(detecteurRomain==1){
+                                            /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                 fputs(trouverAbstract.data(),pFile2);
                                                 fputs(" ",pFile2); 
                                             }
                                         }
+                                         /*Si pour introduction , on avait un chiffre  alors je regarde si le titre à comme chiffre 2*/
                                         else if (detecteurChiffre==1 && (trouverAbstract=="2" || trouverAbstract=="2.")){
                                             /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
@@ -689,7 +758,9 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             /*J'initialise la variable corpsTrouver pour permettre de savoir que j'ai découvert la partie corps du pdf*/
                                             corpsTrouver=1;
                                         }
+                                        /*Si pour introduction , on avait un chiffre et que ce n'est pas un titre alors j'écris dans le document les élémenst que j'ai trouvé*/
                                         else if(detecteurChiffre==1){
+                                            /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                 fputs(trouverAbstract.data(),pFile2);
                                                 fputs(" ",pFile2); 
@@ -708,27 +779,35 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                             corpsTrouver=1;
                                         }
                                     }
+                                    /*Je regarde si je trouve la partie Acknowledgement et si je le trouve je passerais tous le contenu qui le suit jusqu'a je trouve une partie intéressant pour mon document*/
                                     else if (aPassez==0 && (discussionTrouver==1 || conclusionTrouver==1) && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && 
                                     (trouverAbstract=="A" || trouverAbstract=="ACKNOWLEDGMENTS" || trouverAbstract=="ACKNOWLEDGMENT" || trouverAbstract=="Acknowledgment" || trouverAbstract=="Acknowledgments" 
-                                    || trouverAbstract=="ACKNOWLEDGEMENTS" || trouverAbstract=="ACKNOWLEDGEMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") ){
+                                    || trouverAbstract=="ACKNOWLEDGEMENTS" || trouverAbstract=="ACKNOWLEDGEMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") )
+                                    {
+                                        /*Si le mot est A*/
                                         if (trouverAbstract=="A"){
+                                            /*Je sauvegarde ce mot dans une variable string nommé sauvegardeMot*/
                                             std::string sauvegardeMot=trouverAbstract;
+                                            /*Je vais aller vers le prochain mot */
                                             recupereLigneColonne(pFile);
                                             if(strcmp(RecupereDonnerLigne,"</line>")==0){
                                                 while(strcmp(RecupereDonnerLigne,"<word")!=0){
                                                     recupereLigneColonne(pFile);
                                                 }
                                             }
+                                            /*Je vais aller chercher le contenu du mot*/
                                             for (int i=0 ; i<4 ; i++){
                                                 RecupereDonnerLigne=strtok(NULL," \t\n");
                                             }
                                             RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
                                             RecuperationPartieDonnerLigne=strtok(NULL," <>");
                                             trouverAbstract=RecuperationPartieDonnerLigne;
+                                            /*Si le mot correspon à cknowledgment ou cknowledgement avec un s ou avec ou sans Majuscule je rentre .Et je mets ma variable à 1*/
                                             if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT" || trouverAbstract=="cknowledgments" || trouverAbstract=="CKNOWLEDGMENTS" || 
                                             trouverAbstract=="cknowledegment" || trouverAbstract=="CKNOWLEDGEMENT" || trouverAbstract=="cknowledegments" || trouverAbstract=="CKNOWLEDEGMENTS"){
                                                 aPassez=1;
                                             }
+                                            /*Sinon j'écrit le contenu que j'ai trouvé*/
                                             else{
                                                 fputs(sauvegardeMot.data(),pFile2);
                                                 fputs(" ",pFile2); 
@@ -736,6 +815,7 @@ void recupererMotCelonLaColonne(FILE* pFile,FILE* pFile2,int x,int y,int boolean
                                                 fputs(" ",pFile2); 
                                             }
                                         }
+                                        /*Sinon si je suis directemnt sur Acknowledgement alors je passe directment ma cariable à 1*/
                                         else{
                                             aPassez=1;
                                         }
@@ -944,8 +1024,8 @@ int main(int argc, char** argv)
             discussionTrouver=0;                //J'initialise que je n'est pas trouver la discussion dans le fichier pdf
             referenceTrouver=0;                 //J'initialise que je n'est pas trouver la référence dans le fichier pdf
             detecteurRomain=0;                  //J'initialise que je n'est pas trouver de chiffre romain dans un titre de paragraphe dans le fichier pdf
-            detecteurChiffre=0;
-            aPassez=0;
+            detecteurChiffre=0;                 //J'initialise que je n'est pas trouver de chiffre dans un titre de paragraphe dans le fichier pdf
+            aPassez=0;                          //J'initialise qu'il ne faut pas passez les élémenst dans le fichiers
             /*Récupération nom du fichier et du dossier .
              Creation du workspaceInfo de sortie .
              Création application.txt et cration du fichier txt liéer au pdf*/
@@ -1112,10 +1192,12 @@ int main(int argc, char** argv)
                     recupereLigneNormal(pFile,pFile3);
                 }
             }
+            /*Si notre fichier de sortie est en TXT alors j'écris dans le fichier de sortie c'est informations*/
             if(isTxt)
             {
                 fputs("\n",pFile2);
             }
+            /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
             if(isXml)
             {
                 fputs("</auteur>\n",pFile2);
@@ -1242,7 +1324,7 @@ int main(int argc, char** argv)
                                     RecuperationPartieDonnerLigne=strtok(NULL," <>");
                                     /*La maintenant je compare si le mot correspond à Introduction ou INTRODUCTIOn ou ntroduction ou NTRODUCTION . Si c'est vrai je rentre dedans */
                                     if (strcmp(RecuperationPartieDonnerLigne,"Introduction")!= 0 || strcmp(RecuperationPartieDonnerLigne,"INTRODUCTION")!= 0 || strcmp(RecuperationPartieDonnerLigne,"ntroduction")!= 0 || strcmp(RecuperationPartieDonnerLigne,"NTRODUCTION")!= 0){
-                                        /*Si je dois sortir du XML j'écrit dans le ficheir les élémenst suivants*/
+                                        /*Si je dois sortir du XML j'écrit dans le fichier les élémenst suivants*/
                                         if(isXml){
                                             fputs("</abstract>\n",pFile2);
                                             fputs("\t<introduction>",pFile2);
@@ -1254,12 +1336,15 @@ int main(int argc, char** argv)
                                         recuperationDimensionDesTitresParagraphes();
                                         /*J'initialise la variable introductionTrouver à 1 pour me permettre de ne plus rentrer dans cette aprtie de la fonction*/
                                         introductionTrouver=1;
+                                        /*J'initialise un compteur de mot apres l'introduction à 15 car cela me permet de n'avoir pas les élémenst qui font
+                                         la mème taille que les titres de directement me faire passer à une autre étape */
                                         compteurMotApresIntroduction=15;
                                     }
                                     /*Si le mot est I ou I. alors je rentre dedans*/
                                     else if (strcmp(RecuperationPartieDonnerLigne,"I")!=0 || strcmp(RecuperationPartieDonnerLigne,"I.")!=0){
                                         /*J'initialise une variable detecteurRomain qui me permet de dir que les Titres des paragraphes se feront avec des chiffres romains*/
                                         detecteurRomain=1;
+                                        /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                         if(isXml){
                                             fputs("</abstract>\n",pFile2);
                                             fputs("\t<introduction>",pFile2);
@@ -1295,7 +1380,7 @@ int main(int argc, char** argv)
                                     RecuperationPartieDonnerLigne=strtok(NULL," <>");
                                     /*La maintenant je compare si le mot correspond à Introduction ou INTRODUCTIOn ou ntroduction ou NTRODUCTION . Si c'est vrai je rentre dedans */
                                     if (strcmp(RecuperationPartieDonnerLigne,"Introduction")!= 0 || strcmp(RecuperationPartieDonnerLigne,"INTRODUCTION")!= 0 || strcmp(RecuperationPartieDonnerLigne,"ntroduction")!= 0 || strcmp(RecuperationPartieDonnerLigne,"NTRODUCTION")!= 0){
-                                        /*Si je dois sortir du XML j'écrit dans le ficheir les élémenst suivants*/
+                                        /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                         if(isXml){
                                             fputs("</abstract>\n",pFile2);
                                             fputs("\t<introduction>",pFile2);
@@ -1304,12 +1389,15 @@ int main(int argc, char** argv)
                                         recuperationDimensionDesTitresParagraphes();
                                         /*J'initialise la variable introductionTrouver à 1 pour me permettre de ne plus rentrer dans cette aprtie de la fonction*/
                                         introductionTrouver=1;
+                                        /*J'initialise un compteur de mot apres l'introduction à 15 car cela me permet de n'avoir pas les élémenst qui font
+                                         la mème taille que les titres de directement me faire passer à une autre étape */
                                         compteurMotApresIntroduction=15;
                                     }
                                     /*Si le mot est I ou I. alors je rentre dedans*/
                                     else if (strcmp(RecuperationPartieDonnerLigne,"I")!= 0 || strcmp(RecuperationPartieDonnerLigne,"I.")!= 0){
                                         /*J'initialise une variable detecteurRomain qui me permet de dir que les Titres des paragraphes se feront avec des chiffres romains*/
                                         detecteurRomain=1;
+                                        /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                         if(isXml){
                                             fputs("</abstract>\n",pFile2);
                                             fputs("\t<introduction>",pFile2);
@@ -1318,6 +1406,8 @@ int main(int argc, char** argv)
                                         recuperationDimensionDesTitresParagraphes();
                                         /*J'initialise la variable introductionTrouver à 1 pour me permettre de ne plus rentrer dans cette aprtie de la fonction*/
                                         introductionTrouver=1;
+                                        /*J'initialise un compteur de mot apres l'introduction à 15 car cela me permet de n'avoir pas les élémenst qui font
+                                         la mème taille que les titres de directement me faire passer à une autre étape */
                                         compteurMotApresIntroduction=15;
                                         /*Permet d'aller vers une nouvelle du fichier*/
                                         recupereLigneNormal(pFile,pFile3);
@@ -1334,7 +1424,7 @@ int main(int argc, char** argv)
                             }
                             /*Si le contenu du mot c'est Introduction ou INTRODUCTION Alors je rentre */
                             else{
-                                /*Si je dois sortir du XML j'écrit dans le ficheir les élémenst suivants*/
+                                /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                 if(isXml){
                                     fputs("</abstract>\n",pFile2);
                                     fputs("\t<introduction>",pFile2);
@@ -1343,6 +1433,8 @@ int main(int argc, char** argv)
                                 recuperationDimensionDesTitresParagraphes();
                                 /*J'initialise la variable introductionTrouver à 1 pour me permettre de ne plus rentrer dans cette aprtie de la fonction*/
                                 introductionTrouver=1;
+                                /*J'initialise un compteur de mot apres l'introduction à 15 car cela me permet de n'avoir pas les élémenst qui font
+                                 la mème taille que les titres de directement me faire passer à une autre étape */
                                 compteurMotApresIntroduction=15;
                                 
                             }
@@ -1359,6 +1451,8 @@ int main(int argc, char** argv)
                                 RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne,"=\"");
                                 RecuperationPartieDonnerLigne=strtok(NULL,"=\"");
                                 double yMin = atof(RecuperationPartieDonnerLigne);
+                                /*Je regarde si le yMin ne correpond pas à un haut de page ou un bas de page .
+                                Si non je continue*/
                                 if(50.0<=yMin && yMin<=(heigthPage-30)){
                                     strcpy(Ligne,CopieLigne);
                                     /*Je vais aller vers le yMax du mot*/
@@ -1380,13 +1474,14 @@ int main(int argc, char** argv)
                                         if (trouverAbstract == "R"){
                                             /*Je sauvegarde ce mot dans une variable string nommé sauvegardeMot*/
                                             std::string sauvegardeMot=trouverAbstract;
+                                            /*Je vais aller vers le prochain mot */
                                             recupereLigneNormal(pFile,pFile3);
-                                            /*Je vais aller chercher le contenu du mot*/
                                             if(strcmp(RecupereDonnerLigne,"</line>")==0){
                                                 while(strcmp(RecupereDonnerLigne,"<word")!=0){
                                                     recupereLigneNormal(pFile,pFile3);
                                                 }
                                             }
+                                            /*Je vais aller chercher le contenu du mot*/
                                             for (int i=0 ; i<4 ; i++){
                                                 RecupereDonnerLigne=strtok(NULL," \t\n");
                                             }
@@ -1395,9 +1490,11 @@ int main(int argc, char** argv)
                                             trouverAbstract=RecuperationPartieDonnerLigne;
                                             /*Je regarde si c'est EFERENCES ou eferences*/
                                             if (trouverAbstract == "EFERENCES" || trouverAbstract == "eferences"){
+                                               /*Si notre fichier de sortie est en TXT alors j'écris dans le fichier de sortie c'est informations*/
                                                 if(isTxt)
                                                     fputs("Biblio :",pFile2);
                                                         
+                                                /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                                 if(isXml){
                                                     /*Si je suis dans la conclusion alors je la ferme*/
                                                     if(conclusionTrouver == 1){
@@ -1413,8 +1510,10 @@ int main(int argc, char** argv)
                                                     }
                                                     fputs("\t<biblio>",pFile2);
                                                 }
-                                                /*J'initialise la variable referenceTrouver pour dire que j'ai trouver la parti reference du document*/
+                                                /*Dans le cas ou j'était déja passez par la conclusions ou la discussion, 
+                                                je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
                                                 aPassez=0;
+                                                /*J'initialise la variable referenceTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                                 referenceTrouver=1;
                                             }
                                             /*Sinon alors ce n'étais pas la references */
@@ -1427,9 +1526,11 @@ int main(int argc, char** argv)
                                         }
                                         /*Dans le cas ou on a directement le mot reference*/
                                         else {
+                                            /*Si notre fichier de sortie est en TXT alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isTxt)
                                                 fputs("Biblio :",pFile2);
                                                     
+                                            /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                /*Si je suis dans la conclusion alors je la ferme*/
                                                 if(conclusionTrouver==1){
@@ -1445,68 +1546,91 @@ int main(int argc, char** argv)
                                                 }
                                                 fputs("\t<biblio>",pFile2);
                                             }
-                                            /*J'initialise la variable referenceTrouver pour dire que j'ai trouver la parti reference du document*/
+                                            /*Dans le cas ou j'était déja passez par la conclusions ou la discussion, 
+                                            je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
                                             aPassez=0;
+                                            /*J'initialise la variable referenceTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                             referenceTrouver=1;
                                         }
                                     }
                                     /*Je vais regarder maintenant si le mot corresppond aux mot clé lié à conclusions et voir si 
                                     c'est un titre de paragraphe*/
-                                    else if(conclusionTrouver==0 && referenceTrouver==0 && ((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant))) && (trouverAbstract =="Conclusion" || trouverAbstract =="Conclusions" ||
+                                    else if(conclusionTrouver==0 && referenceTrouver ==0 &&((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin )<= (dimensionsImportant+0.000003))) && (trouverAbstract =="Conclusion" || trouverAbstract =="Conclusions" ||
                                             trouverAbstract == "CONCLUSIONS" || 
                                             trouverAbstract == "ONCLUSIONS" || 
-                                            trouverAbstract == "C" )){
-                                                if (trouverAbstract == "C"){
-                                                    std::string sauvegardeMot=trouverAbstract;
+                                            trouverAbstract == "C" ))
+                                    {
+                                        /*Dans le cas ou je trouve C*/
+                                        if (trouverAbstract == "C"){
+                                            /*Je sauvegarde ce mot dans une variable string nommé sauvegardeMot*/
+                                            std::string sauvegardeMot=trouverAbstract;
+                                            /*Je vais aller vers le prochain mot */
+                                            recupereLigneNormal(pFile,pFile3);
+                                            if(strcmp(RecupereDonnerLigne,"</line>")==0){
+                                                while(strcmp(RecupereDonnerLigne,"<word")!=0){
                                                     recupereLigneNormal(pFile,pFile3);
-                                                    if(strcmp(RecupereDonnerLigne,"</line>")==0){
-                                                        while(strcmp(RecupereDonnerLigne,"<word")!=0){
-                                                            recupereLigneNormal(pFile,pFile3);
-                                                        }
-                                                    }
-                                                    for (int i=0 ; i<4 ; i++){
-                                                        RecupereDonnerLigne=strtok(NULL," \t\n");
-                                                    }
-                                                    RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
-                                                    RecuperationPartieDonnerLigne=strtok(NULL," <>");
-                                                    trouverAbstract=RecuperationPartieDonnerLigne;
-                                                    if (trouverAbstract == "ONCLUSIONS"){
-                                                        if(isXml){
-                                                            if(discussionTrouver==1){
-                                                                fputs("</discussion>\n",pFile2);
-                                                            }
-                                                            else if(corpsTrouver==1){
-                                                                fputs("</corps>\n",pFile2);
-                                                            }
-                                                            fputs("\t<conclusion>",pFile2);
-                                                        }
-                                                        aPassez=0;
-                                                        while(strcmp(RecupereDonnerLigne,"<line")!=0){
-                                                            recupereLigneNormal(pFile,pFile3);
-                                                        }
-                                                        conclusionTrouver=1;
-                                                    }
-                                                    else{
-                                                        fputs(sauvegardeMot.data(),pFile2);
-                                                        fputs(" ",pFile2); 
-                                                        fputs(trouverAbstract.data(),pFile2);
-                                                        fputs(" ",pFile2); 
-                                                    }
                                                 }
-                                        else {
-                                            if(isXml){
-                                                if(discussionTrouver==1){
-                                                    fputs("</discussion>\n",pFile2);
-                                                }
-                                                else if(corpsTrouver==1){
-                                                    fputs("</corps>\n",pFile2);
-                                                }
-                                                fputs("\t<conclusion>",pFile2);
                                             }
+                                            /*Je vais aller chercher le contenu du mot*/
+                                            for (int i=0 ; i<4 ; i++){
+                                                RecupereDonnerLigne=strtok(NULL," \t\n");
+                                            }
+                                            RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
+                                            RecuperationPartieDonnerLigne=strtok(NULL," <>");
+                                            trouverAbstract=RecuperationPartieDonnerLigne;
+                                            /*Si mon mot correspon à ONCLUSIONS alors je rentre dedans*/
+                                            if (trouverAbstract == "ONCLUSIONS"){
+                                                /*Si mon fichier de sortie doit etre en XML alors je rentre dedans */
+                                                if(isXml){
+                                                    /*Si j'ai déja découvert une discussion alors je ferme la balise de la discussion*/
+                                                    if(discussionTrouver==1){
+                                                        fputs("</discussion>\n",pFile2);
+                                                    }
+                                                    /*Si j'ai découvert que le corps alors je ferme la balise du corp*/
+                                                    else if(corpsTrouver==1){
+                                                        fputs("</corps>\n",pFile2);
+                                                    }
+                                                    fputs("\t<conclusion>",pFile2);
+                                                }
+                                                /*J'initialise la variable conclusionTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
+                                                conclusionTrouver=1;
+                                                /*Je vais vers la prochaine ligne */
+                                                while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                    recupereLigneNormal(pFile,pFile3);
+                                                }
+                                                /*Dans le cas ou j'était déja passez par la discussion, 
+                                                je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
+                                                aPassez=0;
+                                            }
+                                            /*Sinon si je trouve pas le mot conclusions alors j'écrit ce que javait trouvé dans le fichier de sortie*/
+                                            else{
+                                                fputs(sauvegardeMot.data(),pFile2);
+                                                fputs(" ",pFile2); 
+                                                fputs(trouverAbstract.data(),pFile2);
+                                                fputs(" ",pFile2); 
+                                            }
+                                        }
+                                        else {
+                                            /*Si mon fichier de sortie doit etre en XML alors je rentre dedans */
+                                                if(isXml){
+                                                    /*Si j'ai déja découvert une discussion alors je ferme la balise de la discussion*/
+                                                    if(discussionTrouver==1){
+                                                        fputs("</discussion>\n",pFile2);
+                                                    }
+                                                    /*Si j'ai découvert que le corps alors je ferme la balise du corp*/
+                                                    else if(corpsTrouver==1){
+                                                        fputs("</corps>\n",pFile2);
+                                                    }
+                                                    fputs("\t<conclusion>",pFile2);
+                                                }
+                                            /*Dans le cas ou j'était déja passez par la discussion, 
+                                            je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
                                             aPassez=0;
-                                                        while(strcmp(RecupereDonnerLigne,"<line")!=0){
-                                                            recupereLigneNormal(pFile,pFile3);
-                                                        }
+                                            /*Je vais vers la prochaine ligne */
+                                            while(strcmp(RecupereDonnerLigne,"<line")!=0){
+                                                recupereLigneNormal(pFile,pFile3);
+                                            }
+                                            /*J'initialise la variable conclusionTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                             conclusionTrouver=1;
                                         }
                                     }
@@ -1515,22 +1639,27 @@ int main(int argc, char** argv)
                                     else if(discussionTrouver==0  && referenceTrouver==0 &&((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant))) && (trouverAbstract == "DISCUSSION" ||
                                             trouverAbstract == "Discussion" || 
                                             trouverAbstract == "ISCUSSION" )){
+                                        /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                         if(isXml){
-                                            if(conclusionTrouver==1){
+                                            if(corpsTrouver==1){
                                                 fputs("</corps>\n",pFile2);
                                             }
                                             fputs("\t<discussion>",pFile2);
                                         }
+                                        /*Dans le cas ou j'était déja passez par la conclusions, 
+                                        je l'initialise à 0 pour qu'on puisse éécrire des informations dans le document de sortie*/
                                         aPassez=0;
+                                        /*Je vais vers la prochaine ligne */
                                        while(strcmp(RecupereDonnerLigne,"<line")!=0){
                                             recupereLigneNormal(pFile,pFile3);
                                         }
+                                        /*J'initialise la variable discussionTrouver à 1 pour me permettre de ne plus rentrer dans cette partie de la fonction*/
                                         discussionTrouver=1;
                                     }
                                     /*Je vais regarder maintenant si le mot corresppond et un titre ( si il est après introduction alors cela veut dire qu'on est dans le corps)*/
                                     else if(corpsTrouver==0 && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && compteurMotApresIntroduction<5){
                                         /*Si pour introduction , on avait un chiffre romain alors je regarde si le titre à comme chiffre Romain 2*/
-                                        if (detecteurRomain==1 && (trouverAbstract=="II.")){
+                                        if (detecteurRomain==1 && ( trouverAbstract=="II.")){
                                             /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                 fputs("</introduction>\n",pFile2);
@@ -1541,12 +1670,15 @@ int main(int argc, char** argv)
                                             /*J'initialise la variable corpsTrouver pour permettre de savoir que j'ai découvert la partie corps du pdf*/
                                             corpsTrouver=1;
                                         }
+                                        /*Si pour introduction , on avait un chiffre romain et que ce n'est pas un titre alors j"cris dans le document les élémenst que j'ai trouvé*/
                                         else if(detecteurRomain==1){
+                                            /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                 fputs(trouverAbstract.data(),pFile2);
                                                 fputs(" ",pFile2); 
                                             }
                                         }
+                                         /*Si pour introduction , on avait un chiffre  alors je regarde si le titre à comme chiffre 2*/
                                         else if (detecteurChiffre==1 && (trouverAbstract=="2" || trouverAbstract=="2.")){
                                             /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
@@ -1558,7 +1690,9 @@ int main(int argc, char** argv)
                                             /*J'initialise la variable corpsTrouver pour permettre de savoir que j'ai découvert la partie corps du pdf*/
                                             corpsTrouver=1;
                                         }
+                                        /*Si pour introduction , on avait un chiffre et que ce n'est pas un titre alors j'écris dans le document les élémenst que j'ai trouvé*/
                                         else if(detecteurChiffre==1){
+                                            /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
                                             if(isXml){
                                                 fputs(trouverAbstract.data(),pFile2);
                                                 fputs(" ",pFile2); 
@@ -1577,36 +1711,46 @@ int main(int argc, char** argv)
                                             corpsTrouver=1;
                                         }
                                     }
+                                    /*Je regarde si je trouve la partie Acknowledgement et si je le trouve je passerais tous le contenu qui le suit jusqu'a je trouve une partie intéressant pour mon document*/
                                     else if (aPassez==0 && (discussionTrouver==1 || conclusionTrouver==1) && (((std::to_string(atof(RecuperationPartieDonnerLigne)-yMin) == std::to_string(dimensionsImportant)) || ((dimensionsImportant)<=(atof(RecuperationPartieDonnerLigne)-yMin ) && (atof(RecuperationPartieDonnerLigne)-yMin )<=(dimensionsImportant+0.000003)))) && 
                                     (trouverAbstract=="A" || trouverAbstract=="ACKNOWLEDGMENTS" || trouverAbstract=="ACKNOWLEDGMENT" || trouverAbstract=="Acknowledgment" || trouverAbstract=="Acknowledgments" 
-                                    || trouverAbstract=="ACKNOWLEDGEMENTS" || trouverAbstract=="ACKNOWLEDGEMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") ){
-                                            if (trouverAbstract=="A"){
-                                                std::string sauvegardeMot=trouverAbstract;
-                                                recupereLigneNormal(pFile,pFile3);
-                                                if(strcmp(RecupereDonnerLigne,"</line>")==0){
-                                                    while(strcmp(RecupereDonnerLigne,"<word")!=0){
-                                                        recupereLigneNormal(pFile,pFile3);
-                                                    }
-                                                }
-                                                for (int i=0 ; i<4 ; i++){
-                                                    RecupereDonnerLigne=strtok(NULL," \t\n");
-                                                }
-                                                RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
-                                                RecuperationPartieDonnerLigne=strtok(NULL," <>");
-                                                trouverAbstract=RecuperationPartieDonnerLigne;
-                                            if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT" || trouverAbstract=="cknowledgments" || trouverAbstract=="CKNOWLEDGMENTS" || 
-                                            trouverAbstract=="cknowledegment" || trouverAbstract=="CKNOWLEDGEMENT" || trouverAbstract=="cknowledegments" || trouverAbstract=="CKNOWLEDEGMENTS"){                                                    aPassez=1;
-                                                }
-                                                else{
-                                                    fputs(sauvegardeMot.data(),pFile2);
-                                                    fputs(" ",pFile2); 
-                                                    fputs(trouverAbstract.data(),pFile2);
-                                                    fputs(" ",pFile2); 
+                                    || trouverAbstract=="ACKNOWLEDGEMENTS" || trouverAbstract=="ACKNOWLEDGEMENT" || trouverAbstract=="Acknowledgement" || trouverAbstract=="Acknowledgements") )
+                                    {
+                                        /*Si le mot est A*/
+                                        if (trouverAbstract=="A"){
+                                            /*Je sauvegarde ce mot dans une variable string nommé sauvegardeMot*/
+                                            std::string sauvegardeMot=trouverAbstract;
+                                            /*Je vais aller vers le prochain mot */
+                                            recupereLigneNormal(pFile,pFile3);
+                                            if(strcmp(RecupereDonnerLigne,"</line>")==0){
+                                                while(strcmp(RecupereDonnerLigne,"<word")!=0){
+                                                    recupereLigneNormal(pFile,pFile3);
                                                 }
                                             }
-                                            else{
+                                            /*Je vais aller chercher le contenu du mot*/
+                                            for (int i=0 ; i<4 ; i++){
+                                                RecupereDonnerLigne=strtok(NULL," \t\n");
+                                            }
+                                            RecuperationPartieDonnerLigne=strtok(RecupereDonnerLigne," <>");
+                                            RecuperationPartieDonnerLigne=strtok(NULL," <>");
+                                            trouverAbstract=RecuperationPartieDonnerLigne;
+                                            /*Si le mot correspon à cknowledgment ou cknowledgement avec un s ou avec ou sans Majuscule je rentre .Et je mets ma variable à 1*/
+                                            if (trouverAbstract=="cknowledgment" || trouverAbstract=="CKNOWLEDGMENT" || trouverAbstract=="cknowledgments" || trouverAbstract=="CKNOWLEDGMENTS" || 
+                                            trouverAbstract=="cknowledegment" || trouverAbstract=="CKNOWLEDGEMENT" || trouverAbstract=="cknowledegments" || trouverAbstract=="CKNOWLEDEGMENTS"){
                                                 aPassez=1;
                                             }
+                                            /*Sinon j'écrit le contenu que j'ai trouvé*/
+                                            else{
+                                                fputs(sauvegardeMot.data(),pFile2);
+                                                fputs(" ",pFile2); 
+                                                fputs(trouverAbstract.data(),pFile2);
+                                                fputs(" ",pFile2); 
+                                            }
+                                        }
+                                        /*Sinon si je suis directemnt sur Acknowledgement alors je passe directment ma cariable à 1*/
+                                        else{
+                                            aPassez=1;
+                                        }
                                     }
                                     /*Si le mot n'est pas un titre qu'on cherche alors j'écrit dans le fichier de sortie celon si le fichier doit etre en txt ou xml*/
                                     else if (aPassez==0){
@@ -1655,14 +1799,13 @@ int main(int argc, char** argv)
                             compteurMotApresIntroduction=compteurMotApresIntroduction-1;
                         }
                     }
-
                     else{
                         recupereLigneNormal(pFile,pFile3);
                     }
                 }   
                     recupereLigneNormal(pFile,pFile3);
             }
-            
+            /*Si notre fichier de sortie est en XML alors j'écris dans le fichier de sortie c'est informations*/
             if(isXml){
                 fputs("</biblio>\n",pFile2);
                 fputs("</article>\n",pFile2);
@@ -1678,3 +1821,4 @@ int main(int argc, char** argv)
     }
     return 0;
 }
+
